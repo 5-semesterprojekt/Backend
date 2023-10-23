@@ -10,4 +10,6 @@ npm install -g pnpm
 
 ## Start
 
+```
 pnpm i
+```
