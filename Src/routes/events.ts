@@ -8,8 +8,8 @@ let events: event[] = [];
 const eventValidationRules = [
   body('title').notEmpty().withMessage('Title is required'),
   body('description').notEmpty().withMessage('Description is required'),
-  body('start').isDate().withMessage('Must have a time and date'),
-  body('end').isDate().withMessage('Must have a time and date'),
+  body('start').isISO8601().toDate().withMessage('Must have a time and date'),
+  body('end').isISO8601().toDate().withMessage('Must have a time and date'),
 ];
 
 // create new
@@ -54,7 +54,7 @@ router.put('/:id', eventValidationRules, (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  
+
   const event = events.find((e) => e.id === parseInt(req.params.id));
 
   if (!event) {
