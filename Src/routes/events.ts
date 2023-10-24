@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { event } from '../models/event';
+import { createEvent, getAllEventsByOrgId } from '../Firebase/events';
 
 const router = Router();
 let events: event[] = [];
@@ -13,31 +14,36 @@ const eventValidationRules = [
 ];
 
 // create new
-router.post('/', eventValidationRules, (req: Request, res: Response) => {
+router.post('/:orgId/', eventValidationRules, async (req: Request, res: Response) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
+  //id might be a problem
   const event: event = {
-    id: events.length + 1,
     title: req.body.title,
     description: req.body.description,
     start: req.body.start,
     end: req.body.end,
+    orgId: parseInt(req.params.orgId),
   };
-
+  
+  const id = await createEvent(event);
   events.push(event);
-  res.status(201).json(event);
+  res.status(201).json({...event, id: id});
 });
 
 // get all
-router.get('/', (req: Request, res: Response) => {
-  res.json(events);
+router.get('/:orgId/', async (req: Request, res: Response) => {
+  const test = await getAllEventsByOrgId(parseInt(req.params.orgId));
+  //console.log(test);
+  res.json(test);
 });
 
 //get by id
-router.get('/:id', (req: Request, res: Response) => {
+router.get('/:orgId/:id', (req: Request, res: Response) => {
   const event = events.find((e) => e.id === parseInt(req.params.id));
 
   if (!event) {
@@ -48,7 +54,7 @@ router.get('/:id', (req: Request, res: Response) => {
 });
 
 //update
-router.put('/:id', eventValidationRules, (req: Request, res: Response) => {
+router.put('/:orgId/:id', eventValidationRules, (req: Request, res: Response) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -70,7 +76,7 @@ router.put('/:id', eventValidationRules, (req: Request, res: Response) => {
 });
 
 // delete by id
-router.delete('/:id', eventValidationRules, (req: Request, res: Response) => {
+router.delete('/:orgId/:id', eventValidationRules, (req: Request, res: Response) => {
   const index = events.findIndex((e) => e.id === parseInt(req.params.id));
 
   if (index === -1) {

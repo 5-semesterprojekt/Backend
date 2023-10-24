@@ -1,8 +1,9 @@
 export interface event {
-    id: number;
+    id?: string;
     title: string;
     description: string;
     start: Date;
     end: Date;
+    orgId: number;
   }
 
