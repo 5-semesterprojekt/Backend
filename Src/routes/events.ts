@@ -37,22 +37,21 @@ router.post(
       orgId: parseInt(req.params.orgId),
     };
 
-    const id = await createEvent(event);
-    res.status(201).json({ ...event, id: id });
+    const result = await createEvent(event);
+    res.status(201).json({ ...event, id: result.id });
   }
 );
 
 // get all
 router.get('/:orgId/', async (req: Request, res: Response) => {
-  const test = await getAllEventsByOrgId(parseInt(req.params.orgId));
-  //console.log(test);
-  res.json(test);
+  const events = await getAllEventsByOrgId(parseInt(req.params.orgId));
+  res.json(events);
 });
 
 //get by id
 router.get('/:orgId/:id', async (req: Request, res: Response) => {
   const event: event = await getEventById(req.params.id);
-  if (!event) {
+  if (!event || event.orgId !== parseInt(req.params.orgId)) {
     res.status(404).send('Event not found');
   } else {
     res.json(event);
@@ -78,7 +77,7 @@ router.put(
       event.description = req.body.description || event.description;
       event.start = req.body.start || event.start;
       event.end = req.body.end || event.end;
-
+      //updatefunction here
       res.json(event);
     }
   }

@@ -14,7 +14,7 @@ import { db } from './firebaseConfig';
 import e from 'express';
 //firebase events.ts
 
-export async function createEvent(event: event) {
+export async function createEvent(event: event): Promise<event> {
   try {
     //missing org id
     //docRef makes its own id for events
@@ -29,7 +29,7 @@ export async function createEvent(event: event) {
     };
     await setDoc(docRef, data);
     console.log('Document written with ID: ', docRef.id);
-    return docRef.id;
+    return data as event;
   } catch (e) {
     console.error('Error adding document: ', e);
     throw e;
@@ -47,7 +47,7 @@ export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
   return events as event[];
 }
 
-//ToDo fix this!!! does not get it by id
+
 export async function getEventById(id: string): Promise<event> {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
@@ -59,8 +59,7 @@ export async function getEventById(id: string): Promise<event> {
   }
 }
 
-export async function updateEvent(id: string) {
-  const event: event = (await getEventById(id)) as event;
+export async function updateEvent(event : event) {
   const updateEvent = doc(db, 'events', `${event.id}`);
   await updateDoc(updateEvent, {
     title: event.title,
