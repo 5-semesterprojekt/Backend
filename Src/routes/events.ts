@@ -1,10 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { event } from '../models/event';
-import { createEvent, getAllEventsByOrgId } from '../Firebase/events';
+import { createEvent, getAllEventsByOrgId, getEventById, deleteEvent } from '../Firebase/events';
 
 const router = Router();
-let events: event[] = [];
 
 const eventValidationRules = [
   body('title').notEmpty().withMessage('Title is required'),
@@ -31,7 +30,6 @@ router.post('/:orgId/', eventValidationRules, async (req: Request, res: Response
   };
   
   const id = await createEvent(event);
-  events.push(event);
   res.status(201).json({...event, id: id});
 });
 
@@ -43,9 +41,9 @@ router.get('/:orgId/', async (req: Request, res: Response) => {
 });
 
 //get by id
-router.get('/:orgId/:id', (req: Request, res: Response) => {
-  const event = events.find((e) => e.id === parseInt(req.params.id));
-
+router.get('/:orgId/:id', async (req: Request, res: Response) => {
+  
+  const event: event = await getEventById(req.params.id);
   if (!event) {
     res.status(404).send('Event not found');
   } else {
@@ -54,14 +52,13 @@ router.get('/:orgId/:id', (req: Request, res: Response) => {
 });
 
 //update
-router.put('/:orgId/:id', eventValidationRules, (req: Request, res: Response) => {
+router.put('/:orgId/:id', eventValidationRules, async (req: Request, res: Response) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const event = events.find((e) => e.id === parseInt(req.params.id));
+  const event: event = await getEventById(req.params.id);
 
   if (!event) {
     res.status(404).send('Event not found');
@@ -76,13 +73,13 @@ router.put('/:orgId/:id', eventValidationRules, (req: Request, res: Response) =>
 });
 
 // delete by id
-router.delete('/:orgId/:id', eventValidationRules, (req: Request, res: Response) => {
-  const index = events.findIndex((e) => e.id === parseInt(req.params.id));
+router.delete('/:orgId/:id', eventValidationRules, async (req: Request, res: Response) => {
+  const event: event = await getEventById(req.params.id);
 
-  if (index === -1) {
+  if (!event) {
     res.status(404).send('Event not found');
   } else {
-    events.splice(index, 1);
+    deleteEvent(event);
     res.status(204).send();
   }
 });
