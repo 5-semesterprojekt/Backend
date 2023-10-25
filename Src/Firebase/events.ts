@@ -11,7 +11,6 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { db } from './firebaseConfig';
-import e from 'express';
 //firebase events.ts
 
 export async function createEvent(event: event): Promise<event> {
@@ -28,7 +27,6 @@ export async function createEvent(event: event): Promise<event> {
       orgId: event.orgId,
     };
     await setDoc(docRef, data);
-    console.log('Document written with ID: ', docRef.id);
     return data as event;
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -40,9 +38,18 @@ export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
   const q = query(collection(db, 'events'), where('orgId', '==', orgId));
   const eventsList = await getDocs(q);
   let events: event[] = [];
-  eventsList.forEach((doc) => {
-    console.log(doc.id, ' => ', doc.data());
-    events.push(doc.data() as event);
+  eventsList.forEach((docSnap) => {
+    const startDate: Date = docSnap.data().start.toDate();
+    const endDate: Date = docSnap.data().end.toDate();
+    const data : event = {
+      description:  docSnap.data()?.description,
+      start:        startDate,
+      end:          endDate,
+      id:           docSnap.data()?.id,
+      orgId:        docSnap.data()?.orgId,
+      title:        docSnap.data()?.title,
+    }
+    events.push(data);
   });
   return events as event[];
 }
@@ -52,8 +59,17 @@ export async function getEventById(id: string): Promise<event> {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    console.log('Document data:', docSnap.data());
-    return docSnap.data() as event;
+    const startDate: Date = docSnap.data().start.toDate();
+    const endDate: Date = docSnap.data().end.toDate();
+    const data : event = {
+      description:  docSnap.data()?.description,
+      start:        startDate,
+      end:          endDate,
+      id:           docSnap.data()?.id,
+      orgId:        docSnap.data()?.orgId,
+      title:        docSnap.data()?.title,
+    }
+    return data as event;
   } else {
     throw new Error('No such document!');
   }
@@ -72,5 +88,9 @@ export async function updateEvent(event : event) {
 
 export async function deleteEvent(event: event) {
   const deleteEvent = doc(db, 'events/' + `${event.id}`);
-  await deleteDoc(deleteEvent);
+  try {
+    await getDoc(deleteEvent);
+  } catch (e) {
+    throw e;
+  }
 }
