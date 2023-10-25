@@ -89,7 +89,7 @@ export async function updateEvent(event : event) {
 export async function deleteEvent(event: event) {
   const deleteEvent = doc(db, 'events/' + `${event.id}`);
   try {
-    await getDoc(deleteEvent);
+    await deleteDoc(deleteEvent);
   } catch (e) {
     throw e;
   }
