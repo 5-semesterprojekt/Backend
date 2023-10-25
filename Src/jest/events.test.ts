@@ -44,7 +44,7 @@ test('Create event', async () => {
   });
 
   test('Get event by id', async () => {
-    const data = await getEventById(testEvent.id?.toString() as string);
+    const data =                await getEventById(testEvent.id!);
     expect(data.title)          .toBe("Test Event");
     expect(data.description)    .toBe("Test Description");
     expect(data.start)          .toStrictEqual(startDate);
@@ -59,11 +59,11 @@ test('Create event', async () => {
     });
     */
 
-test('Delete event', async () => {
+test('Delete event/Ask for wrong ID', async () => {
     await deleteEvent(testEvent);
     try {
-        await getEventById(testEvent.id?.toString() as string);
+        await getEventById(testEvent.id!);
       } catch (e) {
-        expect(await getEventById(testEvent.id?.toString() as string)).toThrow(e);
+        expect(await getEventById(testEvent.id!)).toThrow(e);
       }
   });
