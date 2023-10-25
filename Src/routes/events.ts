@@ -6,7 +6,7 @@ import {
   getAllEventsByOrgId,
   getEventById,
   deleteEvent,
-} from '../Firebase/events';
+} from '../firebase/events';
 
 const router = Router();
 
