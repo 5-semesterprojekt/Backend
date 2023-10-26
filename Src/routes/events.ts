@@ -6,13 +6,13 @@ import {
   getAllEventsByOrgId,
   getEventById,
   deleteEvent,
+  updateEvent,
 } from '../firebase/events';
 
 const router = Router();
 
 const eventValidationRules = [
   body('title').notEmpty().withMessage('Title is required'),
-  body('description').notEmpty().withMessage('Description is required'),
   body('start').isISO8601().toDate().withMessage('Must have a time and date'),
   body('end').isISO8601().toDate().withMessage('Must have a time and date'),
 ];
@@ -74,10 +74,11 @@ router.put(
       res.status(404).send('Event not found');
     } else {
       event.title = req.body.title || event.title;
-      event.description = req.body.description || event.description;
+      event.description = req.body.description; // || event.description  Deleted because it did not like an empty string
       event.start = req.body.start || event.start;
       event.end = req.body.end || event.end;
-      //updatefunction here
+      
+      updateEvent(event);
       res.json(event);
     }
   }
