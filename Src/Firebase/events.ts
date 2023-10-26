@@ -55,7 +55,7 @@ export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
 }
 
 
-export async function getEventById(id: string): Promise<event> {
+export async function getEventById(id: string): Promise<event|undefined> {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
@@ -71,7 +71,7 @@ export async function getEventById(id: string): Promise<event> {
     }
     return data as event;
   } else {
-    throw new Error('No such document!');
+    return undefined;
   }
 }
 

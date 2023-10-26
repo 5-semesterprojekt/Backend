@@ -1,6 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import { event } from '../models/event';
+import {asyncHandler} from './errorhandling';
 import {
   createEvent,
   getAllEventsByOrgId,
@@ -17,10 +18,13 @@ const eventValidationRules = [
   body('end').isISO8601().toDate().withMessage('Must have a time and date'),
 ];
 
+
+
 // create new
 router.post(
   '/:orgId/',
   eventValidationRules,
+  asyncHandler(
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -40,35 +44,35 @@ router.post(
     const result = await createEvent(event);
     res.status(201).json({ ...event, id: result.id });
   }
-);
+));
 
 // get all
-router.get('/:orgId/', async (req: Request, res: Response) => {
-  const events = await getAllEventsByOrgId(parseInt(req.params.orgId));
-  res.json(events);
-});
+router.get('/:orgId/', asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const events = await getAllEventsByOrgId(parseInt(req.params.orgId));
+    res.json(events);
+}));
 
 //get by id
-router.get('/:orgId/:id', async (req: Request, res: Response) => {
-  const event: event = await getEventById(req.params.id);
+router.get('/:orgId/:id', asyncHandler(async (req: Request, res: Response) => {
+  const event: event|undefined = await getEventById(req.params.id);
   if (!event || event.orgId !== parseInt(req.params.orgId)) {
     res.status(404).send('Event not found');
   } else {
     res.json(event);
   }
-});
+}));
 
 //update
 router.put(
   '/:orgId/:id',
   eventValidationRules,
-  async (req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const event: event = await getEventById(req.params.id);
+    const event: event|undefined = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');
@@ -82,14 +86,14 @@ router.put(
       res.json(event);
     }
   }
-);
+));
 
 // delete by id
 router.delete(
   '/:orgId/:id',
   eventValidationRules,
-  async (req: Request, res: Response) => {
-    const event: event = await getEventById(req.params.id);
+  asyncHandler(async (req: Request, res: Response) => {
+    const event: event|undefined = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');
@@ -98,6 +102,6 @@ router.delete(
       res.status(204).send();
     }
   }
-);
+));
 
 export default router;
