@@ -48,18 +48,13 @@ router.post(
 
 // get all
 router.get('/:orgId/', asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  try{
     const events = await getAllEventsByOrgId(parseInt(req.params.orgId));
     res.json(events);
-  }catch(e){
-    next(e);
-  }
-  
 }));
 
 //get by id
 router.get('/:orgId/:id', asyncHandler(async (req: Request, res: Response) => {
-  const event: event = await getEventById(req.params.id);
+  const event: event|undefined = await getEventById(req.params.id);
   if (!event || event.orgId !== parseInt(req.params.orgId)) {
     res.status(404).send('Event not found');
   } else {
@@ -77,7 +72,7 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const event: event = await getEventById(req.params.id);
+    const event: event|undefined = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');
@@ -98,17 +93,13 @@ router.delete(
   '/:orgId/:id',
   eventValidationRules,
   asyncHandler(async (req: Request, res: Response) => {
-    const event: event = await getEventById(req.params.id);
+    const event: event|undefined = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');
     } else {
-      try{
-        deleteEvent(event);
-        res.status(204).send();
-      } catch (e) {
-        res.status(500).send(e);
-      }
+      deleteEvent(event);
+      res.status(204).send();
     }
   }
 ));
