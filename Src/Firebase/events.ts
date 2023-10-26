@@ -77,7 +77,6 @@ export async function getEventById(id: string): Promise<event> {
 
 export async function updateEvent(event : event) {
   const updateEvent = doc(db, 'events', `${event.id}`);
-  console.log("event: ",event);
   await updateDoc(updateEvent, {
     title:        event.title,
     description:  event.description, 

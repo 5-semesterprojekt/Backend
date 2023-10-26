@@ -59,8 +59,6 @@ test('Create event', async () => {
     testEvent.description =     ""; //test empty string
     await updateEvent(testEvent);
     const data = await getEventById(testEvent.id!);
-    console.log("testevent: ",testEvent);
-    console.log("data: ",data);
     expect(data.title)          .toBe(testEvent.title);
     expect(data.description)    .toBe(testEvent.description);
     expect(data.start)          .toStrictEqual(testEvent.start);
