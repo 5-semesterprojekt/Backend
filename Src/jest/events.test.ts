@@ -8,15 +8,22 @@ import {
   } from '../firebase/events';
     import { event } from '../models/event';
 
-
+const orgId: number = Math.random() * 1000000;
 const startDate: Date = new Date("2018-12-17T23:24:00");
 const endDate: Date = new Date("2019-12-17T03:24:00");
 let testEvent: event = {
-    title: "Test Event",
-    description: "Test Description",
-    start: startDate,
-    end: endDate,
-    orgId: 123451231231231236789,
+  title: "Test Event",
+  description: "Test Description",
+  start: startDate,
+  end: endDate,
+  orgId: orgId,
+};
+let testEvent2: event = {
+  title: "Test Event 2",
+  description: "Test Description 2",
+  start: startDate,
+  end: endDate,
+  orgId: orgId,
 };
 
     /******************/
@@ -25,6 +32,7 @@ let testEvent: event = {
 
 test('Create event', async () => {
     const data = await createEvent(testEvent);
+    await createEvent(testEvent2);
     testEvent.id = data.id;
 
     expect(data.title)          .toBe(testEvent.title);
@@ -42,6 +50,7 @@ test('Create event', async () => {
     expect(corretId?.start)       .toStrictEqual(testEvent.start);
     expect(corretId?.end)         .toStrictEqual(testEvent.end);
     expect(corretId?.orgId)       .toBe(testEvent.orgId);
+    expect(data.length).toBe(2);
   });
 
   test('Get event by id', async () => {
