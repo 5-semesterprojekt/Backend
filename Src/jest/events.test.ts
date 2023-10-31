@@ -43,7 +43,7 @@ test('Create event', async () => {
   });
 
   test('Get event by orgId', async () => {
-    const data = await getAllEventsByOrgId(testEvent.orgId);
+    const data = await getAllEventsByOrgId(testEvent.orgId!);
     const corretId = data.find (e => e.id === testEvent.id);
     expect(corretId?.title)       .toBe(testEvent.title);
     expect(corretId?.description) .toBe(testEvent.description);
@@ -55,11 +55,11 @@ test('Create event', async () => {
 
   test('Get event by id', async () => {
     const data =                await getEventById(testEvent.id!);
-    expect(data?.title)          .toBe(testEvent.title);
+    expect(data!.title)          .toBe(testEvent.title);
     expect(data?.description)    .toBe(testEvent.description);
-    expect(data?.start)          .toStrictEqual(testEvent.start);
-    expect(data?.end)            .toStrictEqual(testEvent.end);
-    expect(data?.orgId)          .toBe(testEvent.orgId);
+    expect(data!.start)          .toStrictEqual(testEvent.start);
+    expect(data!.end)            .toStrictEqual(testEvent.end);
+    expect(data!.orgId)          .toBe(testEvent.orgId);
   });
 
   
@@ -68,16 +68,16 @@ test('Create event', async () => {
     testEvent.description =     ""; //test empty string
     await updateEvent(testEvent);
     const data = await getEventById(testEvent.id!); 
-    expect(data?.title)          .toBe(testEvent.title);
+    expect(data!.title)          .toBe(testEvent.title);
     expect(data?.description)    .toBe(testEvent.description);
-    expect(data?.start)          .toStrictEqual(testEvent.start);
-    expect(data?.end)            .toStrictEqual(testEvent.end);
-    expect(data?.orgId)          .toBe(testEvent.orgId);
+    expect(data!.start)          .toStrictEqual(testEvent.start);
+    expect(data!.end)            .toStrictEqual(testEvent.end);
+    expect(data!.orgId)          .toBe(testEvent.orgId);
   });
     
 
-test('Delete event/Ask for wrong ID', async () => {
+  test('Delete event/Ask for wrong ID', async () => {
     await deleteEvent(testEvent);
-    
-    expect(async() => await getEventById(testEvent.id!)).rejects.toThrow("No such document!");
+    const data = await getEventById(testEvent.id!);
+    expect(data).toBeUndefined();
 });
