@@ -76,8 +76,8 @@ test('Create event', async () => {
   });
     
 
-test('Delete event/Ask for wrong ID', async () => {
+  test('Delete event/Ask for wrong ID', async () => {
     await deleteEvent(testEvent);
-    const deltedEvent: event|undefined = await getEventById(testEvent.id!)
-    expect(deltedEvent).toBeUndefined();
+    const data = await getEventById(testEvent.id!);
+    expect(data).toBeUndefined();
 });
