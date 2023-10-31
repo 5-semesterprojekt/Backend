@@ -78,6 +78,6 @@ test('Create event', async () => {
 
 test('Delete event/Ask for wrong ID', async () => {
     await deleteEvent(testEvent);
-    
-    expect(async() => await getEventById(testEvent.id!)).rejects.toThrow(undefined);
+    const deltedEvent: event|undefined = await getEventById(testEvent.id!)
+    expect(deltedEvent).toBeUndefined();
 });
