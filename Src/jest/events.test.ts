@@ -6,9 +6,11 @@ import {
     deleteEvent,
     updateEvent
   } from '../firebase/events';
-    import { event } from '../models/event';
+import { event } from '../models/event';
+import request from "supertest";
+import {app} from "../index";
 
-const orgId: number = Math.random() * 1000000;
+const orgId: number = Math.floor(Math.random() * 10000) + 1;;
 const startDate: Date = new Date("2018-12-17T23:24:00");
 const endDate: Date = new Date("2019-12-17T03:24:00");
 let testEvent: event = {
@@ -29,55 +31,73 @@ let testEvent2: event = {
     /******************/
     /**** Firebase ****/
     /******************/
+describe('FIREBASE Event tests', () => {
+  test('Create event', async () => {
+      const data: event = await createEvent(testEvent);
+      const data1: event = await createEvent(testEvent2);
+      testEvent.id = data.id;
+      testEvent2.id = data1.id;
 
-test('Create event', async () => {
-    const data = await createEvent(testEvent);
-    await createEvent(testEvent2);
-    testEvent.id = data.id;
+      expect(data.title)          .toBe(testEvent.title);
+      expect(data.description)    .toBe(testEvent.description);
+      expect(data.start)          .toStrictEqual(testEvent.start);
+      expect(data.end)            .toStrictEqual(testEvent.end);
+      expect(data.orgId)          .toBe(testEvent.orgId);
+    });
 
-    expect(data.title)          .toBe(testEvent.title);
-    expect(data.description)    .toBe(testEvent.description);
-    expect(data.start)          .toStrictEqual(testEvent.start);
-    expect(data.end)            .toStrictEqual(testEvent.end);
-    expect(data.orgId)          .toBe(testEvent.orgId);
-  });
+    test('Get event by orgId', async () => {
+      const data = await getAllEventsByOrgId(testEvent.orgId!);
+      const corretId = data.find (e => e.id === testEvent.id);
+      expect(corretId?.title)       .toBe(testEvent.title);
+      expect(corretId?.description) .toBe(testEvent.description);
+      expect(corretId?.start)       .toStrictEqual(testEvent.start);
+      expect(corretId?.end)         .toStrictEqual(testEvent.end);
+      expect(corretId?.orgId)       .toBe(testEvent.orgId);
+      expect(data.length).toBe(2);
+    });
 
-  test('Get event by orgId', async () => {
-    const data = await getAllEventsByOrgId(testEvent.orgId!);
-    const corretId = data.find (e => e.id === testEvent.id);
-    expect(corretId?.title)       .toBe(testEvent.title);
-    expect(corretId?.description) .toBe(testEvent.description);
-    expect(corretId?.start)       .toStrictEqual(testEvent.start);
-    expect(corretId?.end)         .toStrictEqual(testEvent.end);
-    expect(corretId?.orgId)       .toBe(testEvent.orgId);
-    expect(data.length).toBe(2);
-  });
+    test('Get event by id', async () => {
+      const data =                await getEventById(testEvent.id!);
+      expect(data!.title)          .toBe(testEvent.title);
+      expect(data?.description)    .toBe(testEvent.description);
+      expect(data!.start)          .toStrictEqual(testEvent.start);
+      expect(data!.end)            .toStrictEqual(testEvent.end);
+      expect(data!.orgId)          .toBe(testEvent.orgId);
+    });
 
-  test('Get event by id', async () => {
-    const data =                await getEventById(testEvent.id!);
-    expect(data!.title)          .toBe(testEvent.title);
-    expect(data?.description)    .toBe(testEvent.description);
-    expect(data!.start)          .toStrictEqual(testEvent.start);
-    expect(data!.end)            .toStrictEqual(testEvent.end);
-    expect(data!.orgId)          .toBe(testEvent.orgId);
-  });
-
-  
-  test('Update event', async () => {
-    testEvent.title =           "Updated Test Event";
-    testEvent.description =     ""; //test empty string
-    await updateEvent(testEvent);
-    const data = await getEventById(testEvent.id!); 
-    expect(data!.title)          .toBe(testEvent.title);
-    expect(data?.description)    .toBe(testEvent.description);
-    expect(data!.start)          .toStrictEqual(testEvent.start);
-    expect(data!.end)            .toStrictEqual(testEvent.end);
-    expect(data!.orgId)          .toBe(testEvent.orgId);
-  });
     
+    test('Update event', async () => {
+      testEvent.title =           "Updated Test Event";
+      testEvent.description =     ""; //test empty string
+      await updateEvent(testEvent);
+      const data = await getEventById(testEvent.id!); 
+      expect(data!.title)          .toBe(testEvent.title);
+      expect(data?.description)    .toBe(testEvent.description);
+      expect(data!.start)          .toStrictEqual(testEvent.start);
+      expect(data!.end)            .toStrictEqual(testEvent.end);
+      expect(data!.orgId)          .toBe(testEvent.orgId);
+    });
+      
 
-  test('Delete event/Ask for wrong ID', async () => {
-    await deleteEvent(testEvent);
-    const data = await getEventById(testEvent.id!);
-    expect(data).toBeUndefined();
+    test('Delete event/Ask for wrong ID', async () => {
+      await deleteEvent(testEvent);
+      const data = await getEventById(testEvent.id!);
+      expect(data).toBeUndefined();
+  });
 });
+
+    /******************/
+    /**** Express  ****/
+    /******************/
+
+    describe("EXPRESS Event routes", () => {
+      test("Get one event", async () => {
+        const res = await request(app).get("/events/"+testEvent2.orgId+"/"+testEvent2.id);
+        console.log(res)
+        expect(res.body!.title)          .toBe(testEvent2.title);
+        expect(res.body?.description)    .toBe(testEvent2.description);
+        expect(res.body!.start)          .toStrictEqual(testEvent2.start.toISOString());
+        expect(res.body!.end)            .toStrictEqual(testEvent2.end.toISOString());
+        expect(res.body!.orgId)          .toBe(testEvent2.orgId);
+      });
+    });
