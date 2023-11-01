@@ -41,48 +41,47 @@ export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
   eventsList.forEach((docSnap) => {
     const startDate: Date = docSnap.data().start.toDate();
     const endDate: Date = docSnap.data().end.toDate();
-    const data : event = {
-      description:  docSnap.data()?.description,
-      start:        startDate,
-      end:          endDate,
-      id:           docSnap.data()?.id,
-      orgId:        docSnap.data()?.orgId,
-      title:        docSnap.data()?.title,
-    }
+    const data: event = {
+      description: docSnap.data()?.description,
+      start: startDate,
+      end: endDate,
+      id: docSnap.data()?.id,
+      orgId: docSnap.data()?.orgId,
+      title: docSnap.data()?.title,
+    };
     events.push(data);
   });
   return events as event[];
 }
 
-
-export async function getEventById(id: string): Promise<event|undefined> {
+export async function getEventById(id: string): Promise<event | undefined> {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     const startDate: Date = docSnap.data().start.toDate();
     const endDate: Date = docSnap.data().end.toDate();
-    const data : event = {
-      description:  docSnap.data()?.description,
-      start:        startDate,
-      end:          endDate,
-      id:           docSnap.data()?.id,
-      orgId:        docSnap.data()?.orgId,
-      title:        docSnap.data()?.title,
-    }
+    const data: event = {
+      description: docSnap.data()?.description,
+      start: startDate,
+      end: endDate,
+      id: docSnap.data()?.id,
+      orgId: docSnap.data()?.orgId,
+      title: docSnap.data()?.title,
+    };
     return data as event;
   } else {
     return undefined;
   }
 }
 
-export async function updateEvent(event : event) {
+export async function updateEvent(event: event) {
   const updateEvent = doc(db, 'events', `${event.id}`);
   await updateDoc(updateEvent, {
-    title:        event.title,
-    description:  event.description, 
-    start:        event.start,
-    end:          event.end,
-    orgId:        event.orgId,
+    title: event.title,
+    description: event.description,
+    start: event.start,
+    end: event.end,
+    orgId: event.orgId,
   });
 }
 

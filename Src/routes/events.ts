@@ -40,7 +40,7 @@ router.post(
 
     const result = await createEvent(event);
     res.status(201).json({ ...event, id: result.id });
-  })
+  }),
 );
 
 // get all
@@ -49,7 +49,7 @@ router.get(
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const events = await getAllEventsByOrgId(parseInt(req.params.orgId));
     res.json(events);
-  })
+  }),
 );
 
 //get by id
@@ -62,7 +62,7 @@ router.get(
     } else {
       res.json(event);
     }
-  })
+  }),
 );
 
 //update
@@ -88,7 +88,7 @@ router.put(
       updateEvent(event);
       res.json(event);
     }
-  })
+  }),
 );
 
 // delete by id
@@ -104,7 +104,7 @@ router.delete(
       await deleteEvent(event);
       res.status(204).send();
     }
-  })
+  }),
 );
 
 export default router;
