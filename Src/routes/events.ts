@@ -85,7 +85,7 @@ router.put(
       event.start = req.body.start || event.start;
       event.end = req.body.end || event.end;
 
-      updateEvent(event);
+      await updateEvent(event);
       res.json(event);
     }
   }),
