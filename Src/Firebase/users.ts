@@ -52,7 +52,7 @@ export async function getAllUsersByOrgId(orgId: number): Promise<user[]> {
       lastName: docSnap.data().lastName,
       email: docSnap.data().email,
       id: docSnap.data().id,
-      orgId: docSnap.data().orgId,
+      orgId: [docSnap.data().orgId],
     };
     return data as user;
   });
@@ -65,7 +65,7 @@ export async function getUserById(id: string): Promise<user> {
     lastName: docSnap.data()!.lastName,
     email: docSnap.data()!.email,
     id: docSnap.data()!.id,
-    orgId: docSnap.data()!.orgId,
+    orgId: [docSnap.data()!.orgId],
   };
   return data as user;
 }
@@ -73,14 +73,17 @@ export async function getUserById(id: string): Promise<user> {
 export async function userLogin(
   email: string,
   password: string,
-): Promise<user | undefined> {
+  orgId: string,
+): Promise<user | string> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', email),
   );
   const emailQuerySnapshot = await getDocs(emailQuery);
   const hashedPassword = await bcrypt.hash(password, 10);
-
+  if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
+    return "User doesn't belong to this organization";
+  }
   for (const doc of emailQuerySnapshot.docs) {
     if (doc.data().password === hashedPassword) {
       const data: user = {
@@ -88,12 +91,12 @@ export async function userLogin(
         lastName: doc.data()!.lastName,
         email: doc.data()!.email,
         id: doc.data()!.id,
-        orgId: doc.data()!.orgId,
+        orgId: [doc.data()!.orgId],
       };
       return data as user;
     }
   }
-  return undefined;
+  return "User doesn't exist";
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: user) {

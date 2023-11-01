@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/events', eventRoutes);
-app.use('/users', eventRoutes);
+app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, TypeScript Express!');

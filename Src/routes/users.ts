@@ -51,14 +51,15 @@ router.get(
   `/:orgId/login`,
   userValidationRules,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: user | undefined = await userLogin(
+    const user: user | string = await userLogin(
       req.body.email,
       req.body.password,
+      req.params.orgId,
     );
-    if (user) {
+    if (user instanceof Object) {
       res.status(200).json(user); //missing token, gets it from firebase
     } else {
-      res.status(401).json({ message: 'Invalid Credentials' });
+      res.status(401).json({ message: user });//post string, either wrong email/password or wrong org
     }
   }),
 );
