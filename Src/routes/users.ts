@@ -49,7 +49,6 @@ router.post(
 //user logs in
 router.get(
   `/:orgId/login`,
-  userValidationRules,
   asyncHandler(async (req: Request, res: Response) => {
     const user: user | string = await userLogin(
       req.body.email,
@@ -121,7 +120,7 @@ router.delete(
     if (!user) {
       res.status(404).json({ message: 'User not found' });
     } else {
-      deleteUser(user);
+      await deleteUser(user);
       res.status(204).end();
     }
   }),
