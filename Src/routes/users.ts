@@ -88,7 +88,6 @@ router.get(
 //update user
 router.put(
   '/:orgId/:id',
-  userValidationRules,
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
