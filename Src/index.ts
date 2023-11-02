@@ -19,7 +19,7 @@ app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send(
-    'Hello, TypeScript Express! Go to <a href="https://localhost:3010/">localhost:3010/</a> to see the app',
+    'Hello dumbass, this is the backend. Go to <a href="https://localhost:3010/">localhost:3010/</a> to see the app',
   );
 });
 
