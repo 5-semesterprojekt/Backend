@@ -25,7 +25,7 @@ export async function createUser(newUser: user): Promise<{user:user, token: stri
   );
   const emailQuerySnapshot = await getDocs(emailQuery);
   if (!emailQuerySnapshot.empty) {
-    throw new BaseError('That email is allready in the system',"User already exists", 400);
+    throw new BaseError('That email is allready in the system', 400);
   }
   
   const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
@@ -85,7 +85,7 @@ export async function userLogin(
   
   const hashedPassword = await bcrypt.hash(password, 10);
   if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
-    throw new BaseError('User does not exist in this organization',"Unauthorized", 401);
+    throw new BaseError('User does not exist in this organization', 401);
   }
   for (const doc of emailQuerySnapshot.docs) {
     if (bcrypt.compare(password, doc.data().password)) {
@@ -102,7 +102,7 @@ export async function userLogin(
       return {user, token};
     }
   }
-  throw new BaseError('User did not complete the login because something was spelt wrong!',"Unauthorized", 401);
+  throw new BaseError('User did not complete the login because something was spelt wrong!', 401);
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: user) {
@@ -117,9 +117,6 @@ export async function updateUser(user: user) {
 
 export async function deleteUser(user: user) {
   const delteUser = doc(db, 'users/' + `${user.id}`);
-  try {
-    await deleteDoc(delteUser);
-  } catch (e) {
-    throw e;
-  }
+  await deleteDoc(delteUser);
+  
 }

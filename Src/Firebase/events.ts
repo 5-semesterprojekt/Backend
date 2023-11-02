@@ -65,7 +65,7 @@ export async function getEventById(id: string): Promise<event> {
     };
     return data as event;
   } else {
-    throw new BaseError('Event not found', 'EventNotFoundError', 404);
+    throw new BaseError('Event not found', 404);
   }
 }
 

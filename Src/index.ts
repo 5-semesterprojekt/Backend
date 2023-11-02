@@ -14,7 +14,7 @@ app.use('/events', eventRoutes);
 app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, TypeScript Express!');
+  res.send('Hello, TypeScript Express! Go to <a href="https://localhost:3010/">localhost:3010/</a> to see the app');
 });
 
 // Attach the first Error handling Middleware
