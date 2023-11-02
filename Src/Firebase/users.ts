@@ -18,7 +18,9 @@ import { BaseError } from '../errorHandler/baseErrors';
 const bcrypt = require('bcrypt');
 
 //should return a token aswell
-export async function createUser(newUser: user): Promise<{user:user, token: string}> {
+export async function createUser(
+  newUser: user,
+): Promise<{ user: user; token: string }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', newUser.email),
@@ -27,10 +29,10 @@ export async function createUser(newUser: user): Promise<{user:user, token: stri
   if (!emailQuerySnapshot.empty) {
     throw new BaseError('That email is allready in the system', 400);
   }
-  
+
   const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
   const docRef = doc(collection(db, `users`));
-  const user : user = {
+  const user: user = {
     id: docRef.id,
     firstName: newUser.firstName,
     lastName: newUser.lastName,
@@ -42,7 +44,7 @@ export async function createUser(newUser: user): Promise<{user:user, token: stri
   const token = jwt.sign({ user }, SECRET_KEY, {
     expiresIn: '2 days',
   });
-  return {user, token};
+  return { user, token };
 }
 
 export async function getAllUsersByOrgId(orgId: number): Promise<user[]> {
@@ -76,13 +78,13 @@ export async function userLogin(
   email: string,
   password: string,
   orgId: string,
-): Promise<{user:user, token: string}> {
+): Promise<{ user: user; token: string }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', email),
   );
   const emailQuerySnapshot = await getDocs(emailQuery);
-  
+
   const hashedPassword = await bcrypt.hash(password, 10);
   if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
     throw new BaseError('User does not exist in this organization', 401);
@@ -96,13 +98,16 @@ export async function userLogin(
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      const token = jwt.sign({ user }, "123", {
+      const token = jwt.sign({ user }, '123', {
         expiresIn: '2 days',
       });
-      return {user, token};
+      return { user, token };
     }
   }
-  throw new BaseError('User did not complete the login because something was spelt wrong!', 401);
+  throw new BaseError(
+    'User did not complete the login because something was spelt wrong!',
+    401,
+  );
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: user) {
@@ -118,5 +123,4 @@ export async function updateUser(user: user) {
 export async function deleteUser(user: user) {
   const delteUser = doc(db, 'users/' + `${user.id}`);
   await deleteDoc(delteUser);
-  
 }

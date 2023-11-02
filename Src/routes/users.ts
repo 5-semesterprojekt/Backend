@@ -11,7 +11,7 @@ import {
   updateUser,
   userLogin,
 } from '../firebase/users';
-import {auth} from './auth';
+import { auth } from './auth';
 
 const bcrypt = require('bcrypt');
 const router = Router();
@@ -41,7 +41,7 @@ router.post(
       orgId: [parseInt(req.params.orgId)],
     };
 
-    const user: {user:user, token: string} = await createUser(newUser);
+    const user: { user: user; token: string } = await createUser(newUser);
     res.status(201).json({ user });
   }),
 );
@@ -50,15 +50,16 @@ router.post(
 router.post(
   `/:orgId/login`,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: {user:user, token: string} | string = await userLogin(
+    const user: { user: user; token: string } | string = await userLogin(
       req.body.email,
       req.body.password,
       req.params.orgId,
     );
-    if (user instanceof Object) {//should work, not sure if it should be user
-      res.status(200).json(user); 
+    if (user instanceof Object) {
+      //should work, not sure if it should be user
+      res.status(200).json(user);
     } else {
-      res.status(401).json({ message: user });//post string, either wrong email/password or wrong org
+      res.status(401).json({ message: user }); //post string, either wrong email/password or wrong org
     }
   }),
 );

@@ -9,7 +9,6 @@ import {
 import { event } from '../models/event';
 import { app } from '../index';
 
-
 const request = require('supertest');
 
 const orgId: number = Math.floor(Math.random() * 10000) + 1;
