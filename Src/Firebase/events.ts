@@ -26,7 +26,6 @@ export async function createEvent(event: event): Promise<event> {
   };
   await setDoc(docRef, data);
   return data as event;
- 
 }
 
 export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
