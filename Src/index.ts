@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import eventRoutes from './routes/events';
+import userRoutes from './routes/users';
 import cors from 'cors';
 
 export const app = express();
@@ -9,6 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/events', eventRoutes);
+app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, TypeScript Express!');
