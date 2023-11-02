@@ -7,8 +7,10 @@ import {
   updateEvent,
 } from '../firebase/events';
 import { event } from '../models/event';
-import request from 'supertest';
 import { app } from '../index';
+
+
+const request = require('supertest');
 
 const orgId: number = Math.floor(Math.random() * 10000) + 1;
 const startDate: Date = new Date('2018-12-17T23:24:00');
@@ -143,6 +145,9 @@ describe('EXPRESS Event routes', () => {
   test('Delete event', async () => {
     const res = await request(app).delete(
       '/events/' + testEvent2.orgId + '/' + testEvent2.id,
+    );
+    await request(app).delete(
+      '/events/' + testEvent.orgId + '/' + testEvent.id,
     );
     console.log('Delete event: ', res);
     expect(res.statusCode).toBe(204);

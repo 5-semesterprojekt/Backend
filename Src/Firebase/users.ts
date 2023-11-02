@@ -11,11 +11,12 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { db } from './firebaseConfig';
+import jwt from 'jsonwebtoken';
 
 const bcrypt = require('bcrypt');
 
 //should return a token aswell
-export async function createUser(newUser: user): Promise<user> {
+export async function createUser(newUser: user): Promise<{user:user, token: string}> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', newUser.email),
@@ -27,7 +28,7 @@ export async function createUser(newUser: user): Promise<user> {
   try {
     const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
     const docRef = doc(collection(db, `users`));
-    const data = {
+    const user : user = {
       id: docRef.id,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
@@ -35,8 +36,11 @@ export async function createUser(newUser: user): Promise<user> {
       password: hashedPassword,
       orgId: newUser.orgId,
     };
-    await setDoc(docRef, data);
-    return data as user;
+    await setDoc(docRef, user);
+    const token = jwt.sign({ user }, "123", {
+      expiresIn: '2 days',
+    });
+    return {user, token};
   } catch (e) {
     console.error('Error adding document: ', e);
     throw e;
@@ -74,7 +78,7 @@ export async function userLogin(
   email: string,
   password: string,
   orgId: string,
-): Promise<user | string> {
+): Promise<{user:user, token: string} | string> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', email),
@@ -86,14 +90,17 @@ export async function userLogin(
   }
   for (const doc of emailQuerySnapshot.docs) {
     if (doc.data().password === hashedPassword) {
-      const data: user = {
+      const user: user = {
         firstName: doc.data()!.firstName,
         lastName: doc.data()!.lastName,
         email: doc.data()!.email,
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      return data as user;
+      const token = jwt.sign({ user }, "123", {
+        expiresIn: '2 days',
+      });
+      return {user, token};
     }
   }
   return "User doesn't exist";
