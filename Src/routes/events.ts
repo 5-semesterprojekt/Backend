@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import { event } from '../models/event';
-import { asyncHandler } from './errorhandling';
+import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
   createEvent,
   getAllEventsByOrgId,

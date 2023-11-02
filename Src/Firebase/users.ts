@@ -11,36 +11,40 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { db } from './firebaseConfig';
+import jwt from 'jsonwebtoken';
+import { SECRET_KEY } from '../routes/auth';
+import { BaseError } from '../errorHandler/baseErrors';
 
 const bcrypt = require('bcrypt');
 
 //should return a token aswell
-export async function createUser(newUser: user): Promise<user> {
+export async function createUser(
+  newUser: user,
+): Promise<{ user: user; token: string }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', newUser.email),
   );
   const emailQuerySnapshot = await getDocs(emailQuery);
   if (!emailQuerySnapshot.empty) {
-    throw new Error('Email is already in use'); // Change to a better error handling
+    throw new BaseError('That email is allready in the system', 400);
   }
-  try {
-    const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
-    const docRef = doc(collection(db, `users`));
-    const data = {
-      id: docRef.id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-      password: hashedPassword,
-      orgId: newUser.orgId,
-    };
-    await setDoc(docRef, data);
-    return data as user;
-  } catch (e) {
-    console.error('Error adding document: ', e);
-    throw e;
-  }
+
+  const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
+  const docRef = doc(collection(db, `users`));
+  const user: user = {
+    id: docRef.id,
+    firstName: newUser.firstName,
+    lastName: newUser.lastName,
+    email: newUser.email,
+    password: hashedPassword,
+    orgId: newUser.orgId,
+  };
+  await setDoc(docRef, user);
+  const token = jwt.sign({ user }, SECRET_KEY, {
+    expiresIn: '2 days',
+  });
+  return { user, token };
 }
 
 export async function getAllUsersByOrgId(orgId: number): Promise<user[]> {
@@ -74,29 +78,36 @@ export async function userLogin(
   email: string,
   password: string,
   orgId: string,
-): Promise<user | string> {
+): Promise<{ user: user; token: string }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', email),
   );
   const emailQuerySnapshot = await getDocs(emailQuery);
+
   const hashedPassword = await bcrypt.hash(password, 10);
   if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
-    return "User doesn't belong to this organization";
+    throw new BaseError('User does not exist in this organization', 401);
   }
   for (const doc of emailQuerySnapshot.docs) {
-    if (doc.data().password === hashedPassword) {
-      const data: user = {
+    if (bcrypt.compare(password, doc.data().password)) {
+      const user: user = {
         firstName: doc.data()!.firstName,
         lastName: doc.data()!.lastName,
         email: doc.data()!.email,
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      return data as user;
+      const token = jwt.sign({ user }, '123', {
+        expiresIn: '2 days',
+      });
+      return { user, token };
     }
   }
-  return "User doesn't exist";
+  throw new BaseError(
+    'User did not complete the login because something was spelt wrong!',
+    401,
+  );
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: user) {
@@ -111,9 +122,5 @@ export async function updateUser(user: user) {
 
 export async function deleteUser(user: user) {
   const delteUser = doc(db, 'users/' + `${user.id}`);
-  try {
-    await deleteDoc(delteUser);
-  } catch (e) {
-    throw e;
-  }
+  await deleteDoc(delteUser);
 }
