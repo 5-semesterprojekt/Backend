@@ -55,12 +55,7 @@ router.post(
       req.body.password,
       req.params.orgId,
     );
-    if (user instanceof Object) {
-      //should work, not sure if it should be user
-      res.status(200).json(user);
-    } else {
-      res.status(401).json({ message: user }); //post string, either wrong email/password or wrong org
-    }
+    res.status(200).json(user);
   }),
 );
 
