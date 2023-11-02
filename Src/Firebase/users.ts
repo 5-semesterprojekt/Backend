@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import jwt from 'jsonwebtoken';
+import { SECRET_KEY } from '../routes/auth';
 
 const bcrypt = require('bcrypt');
 
@@ -37,7 +38,7 @@ export async function createUser(newUser: user): Promise<{user:user, token: stri
       orgId: newUser.orgId,
     };
     await setDoc(docRef, user);
-    const token = jwt.sign({ user }, "123", {
+    const token = jwt.sign({ user }, SECRET_KEY, {
       expiresIn: '2 days',
     });
     return {user, token};

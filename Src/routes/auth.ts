@@ -1,7 +1,7 @@
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-export const SECRET_KEY: Secret = 'your-secret-key-here';
+export const SECRET_KEY: Secret = '123';
 
 export interface CustomRequest extends Request {
  token: string | JwtPayload;
@@ -15,7 +15,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
      throw new Error();
    }
 
-   const decoded = jwt.verify(token, "123");
+   const decoded = jwt.verify(token, SECRET_KEY);
    (req as CustomRequest).token = decoded;
 
    next();

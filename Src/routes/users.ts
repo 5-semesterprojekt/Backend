@@ -47,7 +47,7 @@ router.post(
 );
 
 //user logs in
-router.get(
+router.post(
   `/:orgId/login`,
   asyncHandler(async (req: Request, res: Response) => {
     const user: {user:user, token: string} | string = await userLogin(
