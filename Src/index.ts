@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import eventRoutes from './routes/events';
 import userRoutes from './routes/users';
 import cors from 'cors';
+import { errorLogger, errorResponder, invalidPathHandler } from './errorHandler/handlerForExpress';
 
 export const app = express();
 const port = process.env.PORT || 3000;
@@ -16,15 +17,17 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello, TypeScript Express!');
 });
 
-// Add this error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).send('Something went wrong');
-});
-app.use(function (req, res, next) {
-  res.status(404).send("Sorry, that route doesn't exist.");
-  console.log('Route 404: ', req.url);
-});
+// Attach the first Error handling Middleware
+// function defined above (which logs the error)
+app.use(errorLogger)
+
+// Attach the second Error handling Middleware
+// function defined above (which sends back the response)
+app.use(errorResponder)
+
+// Attach the fallback Middleware
+// function which sends back the response for invalid paths)
+app.use(invalidPathHandler)
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

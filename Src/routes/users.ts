@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 import { body, validationResult } from 'express-validator';
 import { user } from '../models/user';
-import { asyncHandler } from './errorhandling';
+import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
   createUser,
   getAllUsersByOrgId,
