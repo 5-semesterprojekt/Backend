@@ -10,6 +10,7 @@ import {
   deleteUser,
   updateUser,
   userLogin,
+  getUserByToken,
 } from '../firebase/users';
 import { auth } from './auth';
 
@@ -34,6 +35,7 @@ router.post(
     }
 
     const newUser: user = {
+      id: "",
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -41,7 +43,7 @@ router.post(
       orgId: [parseInt(req.params.orgId)],
     };
 
-    const user: { user: user; token: string } = await createUser(newUser);
+    const user = await createUser(newUser);
     res.status(201).json({ user });
   }),
 );
@@ -50,7 +52,7 @@ router.post(
 router.post(
   `/:orgId/login`,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: { user: user; token: string } | string = await userLogin(
+    const user: { user: user } = await userLogin(
       req.body.email,
       req.body.password,
       req.params.orgId,
@@ -82,6 +84,19 @@ router.get(
     }
   }),
 );
+//get user by token
+router.get(
+  '/:orgId/me',
+  auth,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user: user = await getUserByToken(req.params.id);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      res.json(user);
+    }
+  }),
+);
 
 //update user
 router.put(
@@ -98,6 +113,7 @@ router.put(
     } else {
       const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
       const updatedUser: user = {
+        id: req.params.id,
         firstName: req.body.firstName || user.firstName,
         lastName: req.body.lastName || user.lastName,
         email: req.body.email || user.email,

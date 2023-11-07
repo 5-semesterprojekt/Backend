@@ -14,13 +14,12 @@ import { db } from './firebaseConfig';
 import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../routes/auth';
 import { BaseError } from '../errorHandler/baseErrors';
+import { async } from '@firebase/util';
 
 const bcrypt = require('bcrypt');
 
 //should return a token aswell
-export async function createUser(
-  newUser: user,
-): Promise<{ user: user; token: string }> {
+export async function createUser(newUser: user): Promise<{ user: user }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', newUser.email),
@@ -40,11 +39,13 @@ export async function createUser(
     password: hashedPassword,
     orgId: newUser.orgId,
   };
-  await setDoc(docRef, user);
-  const token = jwt.sign({ user }, SECRET_KEY, {
-    expiresIn: '2 days',
+  const token = jwt.sign({id: user.id}, SECRET_KEY, {
+    expiresIn: '7d',
   });
-  return { user, token };
+  user.token = token;
+  await setDoc(docRef, user);
+
+  return { user };
 }
 
 export async function getAllUsersByOrgId(orgId: number): Promise<user[]> {
@@ -73,19 +74,22 @@ export async function getUserById(id: string): Promise<user> {
   };
   return data as user;
 }
-//needs token
+export async function getUserByToken(token: string): Promise<user> {
+  const decoded = jwt.verify(token, SECRET_KEY);
+  return decoded as user;
+}
+
 export async function userLogin(
   email: string,
   password: string,
   orgId: string,
-): Promise<{ user: user; token: string }> {
+): Promise<{ user: user }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', email),
   );
   const emailQuerySnapshot = await getDocs(emailQuery);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
   if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
     throw new BaseError('User does not exist in this organization', 401);
   }
@@ -98,10 +102,12 @@ export async function userLogin(
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      const token = jwt.sign({ user }, '123', {
+      const token = jwt.sign(user.id, SECRET_KEY, {
         expiresIn: '2 days',
       });
-      return { user, token };
+      user.token = token;
+
+      return { user };
     }
   }
   throw new BaseError(
