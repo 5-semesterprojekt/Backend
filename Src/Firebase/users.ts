@@ -14,7 +14,6 @@ import { db } from './firebaseConfig';
 import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../routes/auth';
 import { BaseError } from '../errorHandler/baseErrors';
-import { async } from '@firebase/util';
 
 const bcrypt = require('bcrypt');
 
@@ -44,6 +43,9 @@ export async function createUser(newUser: user): Promise<{ user: user }> {
   });
   user.token = token;
   await setDoc(docRef, user);
+  if (!user) {
+    throw new BaseError('User not created', 400);
+  }
 
   return { user };
 }
@@ -61,6 +63,9 @@ export async function getAllUsersByOrgId(orgId: number): Promise<user[]> {
     };
     return data as user;
   });
+  if (!users.length) {
+    throw new BaseError('No users found', 404);
+  }
   return users as user[];
 }
 export async function getUserById(id: string): Promise<user> {
@@ -72,11 +77,17 @@ export async function getUserById(id: string): Promise<user> {
     id: docSnap.data()!.id,
     orgId: [docSnap.data()!.orgId],
   };
+  if (!data) {
+    throw new BaseError('User not found', 404);
+  }
   return data as user;
 }
 export async function getUserByToken(token: string): Promise<user> {
-  const decoded = jwt.verify(token, SECRET_KEY);
-  return decoded as user;
+  const decodedUser = jwt.verify(token, SECRET_KEY);
+  if (!decodedUser) {
+    throw new BaseError('User not found', 404);
+  }
+  return decodedUser as user;
 }
 
 export async function userLogin(
@@ -106,7 +117,9 @@ export async function userLogin(
         expiresIn: '2 days',
       });
       user.token = token;
-
+      if (!user) {
+        throw new BaseError('User not found', 404);
+      }
       return { user };
     }
   }
@@ -124,9 +137,15 @@ export async function updateUser(user: user) {
     email: user.email,
     orgId: user.orgId,
   });
+  if (!updateUser) {
+    throw new BaseError('User not found', 404);
+  }
 }
 
 export async function deleteUser(user: user) {
   const delteUser = doc(db, 'users/' + `${user.id}`);
   await deleteDoc(delteUser);
+  if (!delteUser) {
+    throw new BaseError('User not found', 404);
+  }
 }

@@ -25,6 +25,9 @@ export async function createEvent(event: event): Promise<event> {
     orgId: event.orgId,
   };
   await setDoc(docRef, data);
+  if (!data) {
+    throw new BaseError('Event not created', 400);
+  }
   return data as event;
 }
 
@@ -45,7 +48,11 @@ export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
     };
     events.push(data);
   });
+  if (!events.length) {
+    throw new BaseError('No events found', 404);
+  }
   return events as event[];
+  
 }
 
 export async function getEventById(id: string): Promise<event> {
@@ -77,9 +84,15 @@ export async function updateEvent(event: event) {
     end: event.end,
     orgId: event.orgId,
   });
+  if (!updateEvent) {
+    throw new BaseError('Event not found', 404);
+  }
 }
 
 export async function deleteEvent(event: event) {
   const deleteEvent = doc(db, 'events/' + `${event.id}`);
   await deleteDoc(deleteEvent);
+  if (!deleteEvent) {
+    throw new BaseError('Event not found', 404);
+  }
 }
