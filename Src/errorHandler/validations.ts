@@ -23,7 +23,7 @@ function isValidEmail(email: string): boolean {
 
 // Function to check if a given string is a valid name (only letters and spaces)
 function isValidName(name: string): boolean {
-  const nameRegex = /^[a-zA-Z\s]+$/;
+  const nameRegex = /[^a-zæøåA-ZÆØÅ\-\s]+/;
   return nameRegex.test(name);
 }
 
