@@ -77,11 +77,8 @@ router.get(
   auth,
   asyncHandler(async (req: Request, res: Response) => {
     const user: user = await getUserById(req.params.id);
-    if (!user) {
-      res.status(404).json({ message: 'User not found' });
-    } else {
       res.json(user);
-    }
+    
   }),
 );
 //get user by token
@@ -90,11 +87,9 @@ router.get(
   auth,
   asyncHandler(async (req: Request, res: Response) => {
     const user: user = await getUserByToken(req.params.id);
-    if (!user) {
-      res.status(404).json({ message: 'User not found' });
-    } else {
+    
       res.json(user);
-    }
+    
   }),
 );
 
@@ -108,9 +103,6 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
     const user: user = await getUserById(req.params.id);
-    if (!user) {
-      res.status(404).json({ message: 'User not found' });
-    } else {
       const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
       const updatedUser: user = {
         id: req.params.id,
@@ -122,7 +114,6 @@ router.put(
       };
       updateUser(updatedUser);
       res.status(204).end();
-    }
   }),
 );
 
@@ -132,12 +123,8 @@ router.delete(
   auth,
   asyncHandler(async (req: Request, res: Response) => {
     const user: user = await getUserById(req.params.id);
-    if (!user) {
-      res.status(404).json({ message: 'User not found' });
-    } else {
       await deleteUser(user);
       res.status(204).end();
-    }
   }),
 );
 export default router;
