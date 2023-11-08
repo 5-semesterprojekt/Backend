@@ -14,6 +14,7 @@ import { db } from './firebaseConfig';
 import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../routes/auth';
 import { BaseError } from '../errorHandler/baseErrors';
+import { isValidUser } from '../errorHandler/validations';
 
 const bcrypt = require('bcrypt');
 
@@ -27,7 +28,9 @@ export async function createUser(newUser: user): Promise<{ user: user }> {
   if (!emailQuerySnapshot.empty) {
     throw new BaseError('That email is allready in the system', 400);
   }
-
+  if (!isValidUser(newUser)) {
+    throw new BaseError('User is not valid', 400);
+  }
   const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
   const docRef = doc(collection(db, `users`));
   const user: user = {
@@ -130,6 +133,9 @@ export async function userLogin(
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: user) {
+  if (!isValidUser(user)) {
+    throw new BaseError('User is not valid', 400);
+  }
   const updateUser = doc(db, 'users', `${user.id}`);
   await updateDoc(updateUser, {
     firstName: user.firstName,
