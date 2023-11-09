@@ -108,7 +108,8 @@ export async function userLogin(
     throw new BaseError('User does not exist in this organization', 401);
   }
   for (const doc of emailQuerySnapshot.docs) {
-    if (bcrypt.compare(password, doc.data().password)) {
+    const match = await bcrypt.compare(password, doc.data().password);
+    if (match) {
       const user: user = {
         firstName: doc.data()!.firstName,
         lastName: doc.data()!.lastName,
@@ -116,8 +117,8 @@ export async function userLogin(
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      const token = jwt.sign(user.id, SECRET_KEY, {
-        expiresIn: '2 days',
+      const token = jwt.sign({id: user.id}, SECRET_KEY, {
+        expiresIn: '7d',
       });
       user.token = token;
       if (!user) {
