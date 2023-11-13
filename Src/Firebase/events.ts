@@ -10,7 +10,7 @@ import {
   getDoc,
   deleteDoc,
 } from 'firebase/firestore';
-import { db } from './firebaseConfig';
+import { db } from '../secrets/firebaseConfig';
 import { BaseError } from '../errorHandler/baseErrors';
 //firebase events.ts
 

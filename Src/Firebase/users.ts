@@ -10,9 +10,9 @@ import {
   getDoc,
   deleteDoc,
 } from 'firebase/firestore';
-import { db } from './firebaseConfig';
+import { db } from '../secrets/firebaseConfig';
 import jwt from 'jsonwebtoken';
-import { SECRET_KEY } from '../routes/auth';
+import { SECRET_KEY } from '../secrets/jwtSecretKey';
 import { BaseError } from '../errorHandler/baseErrors';
 import { isValidUser } from '../errorHandler/validations';
 import bcrypt from 'bcrypt';

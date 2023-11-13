@@ -22,7 +22,7 @@ const testUser1: User = {
   firstName: 'Thor',
   lastName: 'Hansen',
   email: 'testmail@hotmail.com',
-  password: 'Test1234!',
+  password: 'Testå123Å4!',
   orgId: [1232344432],
 };
 
