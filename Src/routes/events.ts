@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { Event } from '../models/event';
 import { asyncHandler } from '../errorHandler/asyncHandler';
@@ -46,7 +46,7 @@ router.post(
 // get all
 router.get(
   '/:orgId/',
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const events = await getAllEventsByOrgId(parseInt(req.params.orgId));
     res.json(events);
   }),

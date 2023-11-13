@@ -9,20 +9,19 @@ import {
 import { Event } from '../models/event';
 import { app } from '../index';
 import { BaseError } from '../errorHandler/baseErrors';
-
-const request = require('supertest');
+import  request  from 'supertest';
 
 const orgId: number = Math.floor(Math.random() * 10000) + 1;
 const startDate: Date = new Date('2018-12-17T23:24:00');
 const endDate: Date = new Date('2019-12-17T03:24:00');
-let testEvent: Event = {
+const testEvent: Event = {
   title: 'Test Event',
   description: 'Test Description',
   start: startDate,
   end: endDate,
   orgId: orgId,
 };
-let testEvent2: Event = {
+const testEvent2: Event = {
   title: 'Test Event 2',
   description: 'Test Description 2',
   start: startDate,

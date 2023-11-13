@@ -1,6 +1,5 @@
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/user';
 
 export const SECRET_KEY: Secret = '123';
 

@@ -27,7 +27,8 @@
     "serve": "node dist/index.js",
     "test": "jest --watch",
     "martin": "prettier . --write",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.1",

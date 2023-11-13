@@ -15,8 +15,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../routes/auth';
 import { BaseError } from '../errorHandler/baseErrors';
 import { isValidUser } from '../errorHandler/validations';
-
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 //should return a token aswell
 export async function createUser(newUser: User): Promise<User> {
@@ -31,7 +30,7 @@ export async function createUser(newUser: User): Promise<User> {
   if (!isValidUser(newUser)) {
     throw new BaseError('User is not valid', 400);
   }
-  const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
+  const hashedPassword: string = await bcrypt.hash(newUser.password!, 10);
   const docRef = doc(collection(db, `users`));
   const user: User = {
     id: docRef.id,
