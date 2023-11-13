@@ -41,7 +41,7 @@ export async function createUser(newUser: User): Promise<User> {
     password: hashedPassword,
     orgId: newUser.orgId,
   };
-  const token = jwt.sign({id: user.id}, SECRET_KEY, {
+  const token = jwt.sign({ id: user.id }, SECRET_KEY, {
     expiresIn: '7d',
   });
   user.token = token;
@@ -50,11 +50,14 @@ export async function createUser(newUser: User): Promise<User> {
     throw new BaseError('User not created', 400);
   }
 
-  return  user ;
+  return user;
 }
 
 export async function getAllUsersByOrgId(orgId: number): Promise<User[]> {
-  const q = query(collection(db, 'users'), where('orgId', 'array-contains', orgId));
+  const q = query(
+    collection(db, 'users'),
+    where('orgId', 'array-contains', orgId),
+  );
   const usersList = await getDocs(q);
   const users: User[] = usersList.docs.map((docSnap) => {
     const data: User = {
@@ -73,8 +76,8 @@ export async function getAllUsersByOrgId(orgId: number): Promise<User[]> {
 }
 export async function getUserById(id: string): Promise<User> {
   const docSnap = await getDoc(doc(db, 'users', id));
-  if (!docSnap.exists()|| !docSnap.data()) {
-    throw new BaseError('User not found', 404);
+  if (!docSnap.exists() || !docSnap.data()) {
+    throw new BaseError('User not found1', 404);
   }
   const data: User = {
     firstName: docSnap.data()!.firstName,
@@ -85,12 +88,13 @@ export async function getUserById(id: string): Promise<User> {
   };
   return data as User;
 }
-export async function getUserByToken(token: string): Promise<User> {
-  const decodedUser = jwt.verify(token, SECRET_KEY);
-  if (!decodedUser) {
+export async function getUserByToken(id: string): Promise<User> {
+  //const decodedUser = jwt.verify(token, SECRET_KEY);
+  const user = await getUserById(id);
+  if (!user) {
     throw new BaseError('User not found', 404);
   }
-  return decodedUser as User;
+  return user as User;
 }
 
 export async function userLogin(
@@ -117,7 +121,7 @@ export async function userLogin(
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      const token = jwt.sign({id: user.id}, SECRET_KEY, {
+      const token = jwt.sign({ id: user.id }, SECRET_KEY, {
         expiresIn: '7d',
       });
       user.token = token;

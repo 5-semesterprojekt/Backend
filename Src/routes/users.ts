@@ -12,7 +12,7 @@ import {
   userLogin,
   getUserByToken,
 } from '../firebase/users';
-import { auth } from './auth';
+import { auth, CustomRequest } from './auth';
 
 const bcrypt = require('bcrypt');
 const router = Router();
@@ -35,7 +35,7 @@ router.post(
     }
 
     const newUser: User = {
-      id: "",
+      id: '',
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -70,27 +70,24 @@ router.get(
     res.json(users);
   }),
 );
+//get user by token
+router.get(
+  '/:orgId/me',
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
+    console.log(req);
+    const user: User = await getUserByToken(req.token as string);
 
+    res.json(user);
+  }),
+);
 //get user by id
 router.get(
   '/:orgId/:id',
   auth,
   asyncHandler(async (req: Request, res: Response) => {
     const user: User = await getUserById(req.params.id);
-      res.json(user);
-    
-  }),
-);
-//get user by token
-router.get(
-  '/:orgId/me',
-  auth,
-  asyncHandler(async (req: Request, res: Response) => {
-    console.log(req.headers);
-    const user: User = await getUserByToken(req.headers.authorization!);
-    
-      res.json(user);
-    
+    res.json(user);
   }),
 );
 
@@ -103,18 +100,18 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-      const user: User = await getUserById(req.params.id);
-      const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
-      const updatedUser: User = {
-        id: req.params.id,
-        firstName: req.body.firstName || user.firstName,
-        lastName: req.body.lastName || user.lastName,
-        email: req.body.email || user.email,
-        password: hashedPassword || user.password,
-        orgId: [parseInt(req.params.orgId)],
-      };
-      updateUser(updatedUser);
-      res.status(204).end();
+    const user: User = await getUserById(req.params.id);
+    const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
+    const updatedUser: User = {
+      id: req.params.id,
+      firstName: req.body.firstName || user.firstName,
+      lastName: req.body.lastName || user.lastName,
+      email: req.body.email || user.email,
+      password: hashedPassword || user.password,
+      orgId: [parseInt(req.params.orgId)],
+    };
+    updateUser(updatedUser);
+    res.status(204).end();
   }),
 );
 
@@ -124,8 +121,8 @@ router.delete(
   auth,
   asyncHandler(async (req: Request, res: Response) => {
     const user: User = await getUserById(req.params.id);
-      await deleteUser(user);
-      res.status(204).end();
+    await deleteUser(user);
+    res.status(204).end();
   }),
 );
 export default router;

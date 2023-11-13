@@ -10,7 +10,11 @@ import {
   userLogin,
 } from '../firebase/users';
 import { BaseError } from '../errorHandler/baseErrors';
-import { isValidName, isValidPassword, isValidEmail } from '../errorHandler/validations';
+import {
+  isValidName,
+  isValidPassword,
+  isValidEmail,
+} from '../errorHandler/validations';
 
 const request = require('supertest');
 
@@ -23,15 +27,13 @@ let testUser1: User = {
   orgId: [1232344432],
 };
 
-
 describe('Regex tests', () => {
   test('regex tests :)', () => {
     expect(isValidName(testUser1.firstName)).toBe(true);
     expect(isValidName(testUser1.lastName)).toBe(true);
     expect(isValidEmail(testUser1.email)).toBe(true);
     expect(isValidPassword(testUser1.password as string)).toBe(true);
-  }
-  );
+  });
 });
 
 describe('FIREBASE User tests', () => {
@@ -62,7 +64,11 @@ describe('FIREBASE User tests', () => {
     expect(data.orgId).toStrictEqual(testUser1.orgId);
   });
   test('User login', async () => {
-    const data = await userLogin(testUser1.email, testUser1.password as string, testUser1.orgId![0].toString());
+    const data = await userLogin(
+      testUser1.email,
+      testUser1.password as string,
+      testUser1.orgId![0].toString(),
+    );
     expect(data.user.firstName).toBe(testUser1.firstName);
     expect(data.user.lastName).toBe(testUser1.lastName);
     expect(data.user.email).toBe(testUser1.email);
@@ -73,6 +79,5 @@ describe('FIREBASE User tests', () => {
   test('Delete user', async () => {
     await deleteUser(testUser1);
     await expect(getUserById(testUser1.id!)).rejects.toThrow(BaseError);
-
   });
 });
