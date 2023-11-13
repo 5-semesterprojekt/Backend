@@ -86,7 +86,8 @@ router.get(
   '/:orgId/me',
   auth,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: User = await getUserByToken(req.params.id);
+    console.log(req.headers);
+    const user: User = await getUserByToken(req.headers.authorization!);
     
       res.json(user);
     
