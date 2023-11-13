@@ -1,8 +1,7 @@
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/user';
+import { SECRET_KEY } from '../secrets/jwtSecretKey';
 
-export const SECRET_KEY: Secret = '123';
 
 export interface CustomRequest extends Request {
   token: string | JwtPayload;
