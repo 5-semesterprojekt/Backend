@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
-import { event } from '../models/event';
+import { Event } from '../models/event';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
   createEvent,
@@ -30,7 +30,7 @@ router.post(
     }
 
     //id might be a problem
-    const event: event = {
+    const event: Event = {
       title: req.body.title,
       description: req.body.description,
       start: req.body.start,
@@ -56,7 +56,7 @@ router.get(
 router.get(
   '/:orgId/:id',
   asyncHandler(async (req: Request, res: Response) => {
-    const event: event | undefined = await getEventById(req.params.id);
+    const event: Event | undefined = await getEventById(req.params.id);
     if (!event || event.orgId !== parseInt(req.params.orgId)) {
       res.status(404).send('Event not found');
     } else {
@@ -75,7 +75,7 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const event: event | undefined = await getEventById(req.params.id);
+    const event: Event | undefined = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');
@@ -96,7 +96,7 @@ router.delete(
   '/:orgId/:id',
   eventValidationRules,
   asyncHandler(async (req: Request, res: Response) => {
-    const event: event | undefined = await getEventById(req.params.id);
+    const event: Event | undefined = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');

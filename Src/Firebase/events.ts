@@ -1,4 +1,4 @@
-import { event } from '../models/event';
+import { Event } from '../models/event';
 import {
   collection,
   getDocs,
@@ -14,7 +14,7 @@ import { db } from './firebaseConfig';
 import { BaseError } from '../errorHandler/baseErrors';
 //firebase events.ts
 
-export async function createEvent(event: event): Promise<event> {
+export async function createEvent(event: Event): Promise<Event> {
   const docRef = doc(collection(db, `events`));
   const data = {
     id: docRef.id,
@@ -28,17 +28,17 @@ export async function createEvent(event: event): Promise<event> {
   if (!data) {
     throw new BaseError('Event not created', 400);
   }
-  return data as event;
+  return data as Event;
 }
 
-export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
+export async function getAllEventsByOrgId(orgId: number): Promise<Event[]> {
   const q = query(collection(db, 'events'), where('orgId', '==', orgId));
   const eventsList = await getDocs(q);
-  let events: event[] = [];
+  let events: Event[] = [];
   eventsList.forEach((docSnap) => {
     const startDate: Date = docSnap.data().start.toDate();
     const endDate: Date = docSnap.data().end.toDate();
-    const data: event = {
+    const data: Event = {
       description: docSnap.data()?.description,
       start: startDate,
       end: endDate,
@@ -51,17 +51,17 @@ export async function getAllEventsByOrgId(orgId: number): Promise<event[]> {
   if (!events.length) {
     throw new BaseError('No events found', 404);
   }
-  return events as event[];
+  return events as Event[];
   
 }
 
-export async function getEventById(id: string): Promise<event> {
+export async function getEventById(id: string): Promise<Event> {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     const startDate: Date = docSnap.data().start.toDate();
     const endDate: Date = docSnap.data().end.toDate();
-    const data: event = {
+    const data: Event = {
       description: docSnap.data()?.description,
       start: startDate,
       end: endDate,
@@ -69,13 +69,13 @@ export async function getEventById(id: string): Promise<event> {
       orgId: docSnap.data()?.orgId,
       title: docSnap.data()?.title,
     };
-    return data as event;
+    return data as Event;
   } else {
     throw new BaseError('Event not found', 404);
   }
 }
 
-export async function updateEvent(event: event) {
+export async function updateEvent(event: Event) {
   const updateEvent = doc(db, 'events', `${event.id}`);
   await updateDoc(updateEvent, {
     title: event.title,
@@ -89,7 +89,7 @@ export async function updateEvent(event: event) {
   }
 }
 
-export async function deleteEvent(event: event) {
+export async function deleteEvent(event: Event) {
   const deleteEvent = doc(db, 'events/' + `${event.id}`);
   await deleteDoc(deleteEvent);
   if (!deleteEvent) {

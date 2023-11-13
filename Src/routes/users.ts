@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
 import { body, validationResult } from 'express-validator';
-import { user } from '../models/user';
+import { User } from '../models/user';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
   createUser,
@@ -34,7 +34,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const newUser: user = {
+    const newUser: User = {
       id: "",
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -44,7 +44,7 @@ router.post(
     };
 
     const user = await createUser(newUser);
-    res.status(201).json({ user });
+    res.status(201).json(user);
   }),
 );
 
@@ -52,7 +52,7 @@ router.post(
 router.post(
   `/:orgId/login`,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: { user: user } = await userLogin(
+    const user: { user: User } = await userLogin(
       req.body.email,
       req.body.password,
       req.params.orgId,
@@ -76,7 +76,7 @@ router.get(
   '/:orgId/:id',
   auth,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: user = await getUserById(req.params.id);
+    const user: User = await getUserById(req.params.id);
       res.json(user);
     
   }),
@@ -86,7 +86,7 @@ router.get(
   '/:orgId/me',
   auth,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: user = await getUserByToken(req.params.id);
+    const user: User = await getUserByToken(req.params.id);
     
       res.json(user);
     
@@ -102,9 +102,9 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const user: user = await getUserById(req.params.id);
+      const user: User = await getUserById(req.params.id);
       const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
-      const updatedUser: user = {
+      const updatedUser: User = {
         id: req.params.id,
         firstName: req.body.firstName || user.firstName,
         lastName: req.body.lastName || user.lastName,
@@ -122,7 +122,7 @@ router.delete(
   '/:orgId/:id',
   auth,
   asyncHandler(async (req: Request, res: Response) => {
-    const user: user = await getUserById(req.params.id);
+    const user: User = await getUserById(req.params.id);
       await deleteUser(user);
       res.status(204).end();
   }),
