@@ -52,7 +52,6 @@ export async function getAllEventsByOrgId(orgId: number): Promise<Event[]> {
     throw new BaseError('No events found', 404);
   }
   return events as Event[];
-  
 }
 
 export async function getEventById(id: string): Promise<Event> {

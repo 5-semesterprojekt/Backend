@@ -23,8 +23,9 @@ export const errorResponder = (
   response.header('Content-Type', 'application/json');
   if (error instanceof BaseError) {
     response.status(error.status).send(error.message);
+  } else {
+    response.status(500).send('Something went wrong');
   }
-  response.status(500).send(error.message);
 };
 
 // Fallback Middleware function for returning
