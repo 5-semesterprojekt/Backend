@@ -1,1 +1,3 @@
 node_modules/
+src/secrets/firebaseconfig.ts
+src/secrets/jwtSecretKey.ts
