@@ -77,7 +77,7 @@ export async function getAllUsersByOrgId(orgId: number): Promise<User[]> {
 export async function getUserById(id: string): Promise<User> {
   const docSnap = await getDoc(doc(db, 'users', id));
   if (!docSnap.exists() || !docSnap.data()) {
-    throw new BaseError('User not found1', 404);
+    throw new BaseError('User not found', 404);
   }
   const data: User = {
     firstName: docSnap.data()!.firstName,
