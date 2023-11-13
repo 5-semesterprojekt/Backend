@@ -1,4 +1,4 @@
-import { user } from '../models/user';
+import { User } from '../models/user';
 import {
   collection,
   getDocs,
@@ -19,7 +19,7 @@ import { isValidUser } from '../errorHandler/validations';
 const bcrypt = require('bcrypt');
 
 //should return a token aswell
-export async function createUser(newUser: user): Promise<{ user: user }> {
+export async function createUser(newUser: User): Promise<User> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', newUser.email),
@@ -33,7 +33,7 @@ export async function createUser(newUser: user): Promise<{ user: user }> {
   }
   const hashedPassword: string = await bcrypt.hash(newUser.password, 10);
   const docRef = doc(collection(db, `users`));
-  const user: user = {
+  const user: User = {
     id: docRef.id,
     firstName: newUser.firstName,
     lastName: newUser.lastName,
@@ -50,54 +50,54 @@ export async function createUser(newUser: user): Promise<{ user: user }> {
     throw new BaseError('User not created', 400);
   }
 
-  return { user };
+  return  user ;
 }
 
-export async function getAllUsersByOrgId(orgId: number): Promise<user[]> {
-  const q = query(collection(db, 'users'), where('orgId', '==', orgId));
+export async function getAllUsersByOrgId(orgId: number): Promise<User[]> {
+  const q = query(collection(db, 'users'), where('orgId', 'array-contains', orgId));
   const usersList = await getDocs(q);
-  const users: user[] = usersList.docs.map((docSnap) => {
-    const data: user = {
+  const users: User[] = usersList.docs.map((docSnap) => {
+    const data: User = {
       firstName: docSnap.data().firstName,
       lastName: docSnap.data().lastName,
       email: docSnap.data().email,
       id: docSnap.data().id,
-      orgId: [docSnap.data().orgId],
+      orgId: docSnap.data().orgId,
     };
-    return data as user;
+    return data as User;
   });
   if (!users.length) {
     throw new BaseError('No users found', 404);
   }
-  return users as user[];
+  return users as User[];
 }
-export async function getUserById(id: string): Promise<user> {
+export async function getUserById(id: string): Promise<User> {
   const docSnap = await getDoc(doc(db, 'users', id));
-  const data: user = {
+  if (!docSnap.exists()|| !docSnap.data()) {
+    throw new BaseError('User not found', 404);
+  }
+  const data: User = {
     firstName: docSnap.data()!.firstName,
     lastName: docSnap.data()!.lastName,
     email: docSnap.data()!.email,
     id: docSnap.data()!.id,
-    orgId: [docSnap.data()!.orgId],
+    orgId: docSnap.data()!.orgId,
   };
-  if (!data) {
-    throw new BaseError('User not found', 404);
-  }
-  return data as user;
+  return data as User;
 }
-export async function getUserByToken(token: string): Promise<user> {
+export async function getUserByToken(token: string): Promise<User> {
   const decodedUser = jwt.verify(token, SECRET_KEY);
   if (!decodedUser) {
     throw new BaseError('User not found', 404);
   }
-  return decodedUser as user;
+  return decodedUser as User;
 }
 
 export async function userLogin(
   email: string,
   password: string,
   orgId: string,
-): Promise<{ user: user }> {
+): Promise<{ user: User }> {
   const emailQuery = query(
     collection(db, 'users'),
     where('email', '==', email),
@@ -109,15 +109,15 @@ export async function userLogin(
   }
   for (const doc of emailQuerySnapshot.docs) {
     if (bcrypt.compare(password, doc.data().password)) {
-      const user: user = {
+      const user: User = {
         firstName: doc.data()!.firstName,
         lastName: doc.data()!.lastName,
         email: doc.data()!.email,
         id: doc.data()!.id,
         orgId: [doc.data()!.orgId],
       };
-      const token = jwt.sign(user.id, SECRET_KEY, {
-        expiresIn: '2 days',
+      const token = jwt.sign({id: user.id}, SECRET_KEY, {
+        expiresIn: '7d',
       });
       user.token = token;
       if (!user) {
@@ -132,7 +132,7 @@ export async function userLogin(
   );
 }
 //hashes password in routes intill i know a better way
-export async function updateUser(user: user) {
+export async function updateUser(user: User) {
   if (!isValidUser(user)) {
     throw new BaseError('User is not valid', 400);
   }
@@ -148,7 +148,7 @@ export async function updateUser(user: user) {
   }
 }
 
-export async function deleteUser(user: user) {
+export async function deleteUser(user: User) {
   const delteUser = doc(db, 'users/' + `${user.id}`);
   await deleteDoc(delteUser);
   if (!delteUser) {

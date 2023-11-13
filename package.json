@@ -19,7 +19,9 @@
     "build": "tsc",
     "serve": "node dist/index.js",
     "test": "jest --watch",
-    "martin": "prettier . --write"
+    "martin": "prettier . --write",
+    "type-check": "tsc --noEmit"
+    
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.1",

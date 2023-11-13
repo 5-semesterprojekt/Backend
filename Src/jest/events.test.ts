@@ -6,22 +6,23 @@ import {
   deleteEvent,
   updateEvent,
 } from '../firebase/events';
-import { event } from '../models/event';
+import { Event } from '../models/event';
 import { app } from '../index';
+import { BaseError } from '../errorHandler/baseErrors';
 
 const request = require('supertest');
 
 const orgId: number = Math.floor(Math.random() * 10000) + 1;
 const startDate: Date = new Date('2018-12-17T23:24:00');
 const endDate: Date = new Date('2019-12-17T03:24:00');
-let testEvent: event = {
+let testEvent: Event = {
   title: 'Test Event',
   description: 'Test Description',
   start: startDate,
   end: endDate,
   orgId: orgId,
 };
-let testEvent2: event = {
+let testEvent2: Event = {
   title: 'Test Event 2',
   description: 'Test Description 2',
   start: startDate,
@@ -34,8 +35,8 @@ let testEvent2: event = {
 /******************/
 describe('FIREBASE Event tests', () => {
   test('Create event', async () => {
-    const data: event = await createEvent(testEvent);
-    const data1: event = await createEvent(testEvent2);
+    const data: Event = await createEvent(testEvent);
+    const data1: Event = await createEvent(testEvent2);
     testEvent.id = data.id;
     testEvent2.id = data1.id;
 
@@ -80,8 +81,7 @@ describe('FIREBASE Event tests', () => {
 
   test('Delete event/Ask for wrong ID', async () => {
     await deleteEvent(testEvent);
-    const data = await getEventById(testEvent.id!);
-    expect(data).toBeUndefined();
+    await expect(getEventById(testEvent.id!)).rejects.toThrow(BaseError);
   });
 });
 
@@ -94,7 +94,6 @@ describe('EXPRESS Event routes', () => {
     const res = await request(app)
       .post('/events/' + testEvent.orgId)
       .send(testEvent);
-    console.log('post: ', res);
     testEvent.id = res.body.id;
     expect(res.body!.id).toBe(testEvent.id);
     expect(res.body!.title).toBe(testEvent.title);
@@ -108,7 +107,6 @@ describe('EXPRESS Event routes', () => {
     const res = await request(app).get(
       '/events/' + testEvent2.orgId + '/' + testEvent2.id,
     );
-    console.log('Get one event: ', res);
     expect(res.body!.title).toBe(testEvent2.title);
     expect(res.body?.description).toBe(testEvent2.description);
     expect(res.body!.start).toStrictEqual(testEvent2.start.toISOString());
@@ -118,8 +116,7 @@ describe('EXPRESS Event routes', () => {
 
   test('Get events by orgId', async () => {
     const res = await request(app).get('/events/' + testEvent2.orgId);
-    console.log('Get event by orgId: ', res);
-    const corretId = res.body.find((ev: event) => ev.id === testEvent2.id);
+    const corretId = res.body.find((ev: Event) => ev.id === testEvent2.id);
     expect(corretId!.title).toBe(testEvent2.title);
     expect(corretId?.description).toBe(testEvent2.description);
     expect(corretId!.start).toStrictEqual(testEvent2.start.toISOString());
@@ -133,7 +130,6 @@ describe('EXPRESS Event routes', () => {
     const res = await request(app)
       .put('/events/' + testEvent2.orgId + '/' + testEvent2.id)
       .send(testEvent2);
-    console.log('Update event: ', res);
     expect(res.body!.title).toBe(testEvent2.title);
     expect(res.body?.description).toBe(testEvent2.description);
     expect(res.body!.start).toStrictEqual(testEvent2.start.toISOString());
@@ -148,7 +144,6 @@ describe('EXPRESS Event routes', () => {
     await request(app).delete(
       '/events/' + testEvent.orgId + '/' + testEvent.id,
     );
-    console.log('Delete event: ', res);
     expect(res.statusCode).toBe(204);
   });
 });
