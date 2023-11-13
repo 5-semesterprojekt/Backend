@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { BaseError } from './baseErrors';
 
 // Error handling Middleware function for logging the error message
@@ -18,7 +18,6 @@ export const errorResponder = (
   error: Error,
   request: Request,
   response: Response,
-  next: NextFunction,
 ) => {
   response.header('Content-Type', 'application/json');
   if (error instanceof BaseError) {
@@ -33,7 +32,6 @@ export const errorResponder = (
 export const invalidPathHandler = (
   request: Request,
   response: Response,
-  next: NextFunction,
 ) => {
   response.status(404);
   response.send('invalid path');

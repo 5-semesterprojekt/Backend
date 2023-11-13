@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 
 import { body, validationResult } from 'express-validator';
 import { User } from '../models/user';
@@ -13,8 +13,8 @@ import {
   getUserByToken,
 } from '../firebase/users';
 import { auth, CustomRequest } from './auth';
+import bcrypt from 'bcrypt';
 
-const bcrypt = require('bcrypt');
 const router = Router();
 
 const userValidationRules = [
@@ -65,7 +65,7 @@ router.post(
 router.get(
   '/:orgId/',
   auth,
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const users = await getAllUsersByOrgId(parseInt(req.params.orgId));
     res.json(users);
   }),

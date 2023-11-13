@@ -1,4 +1,4 @@
-import { app } from '../index';
+//import { app } from '../index';
 import { User } from '../models/user';
 import { expect, test } from '@jest/globals';
 import {
@@ -6,7 +6,6 @@ import {
   getUserById,
   getAllUsersByOrgId,
   deleteUser,
-  updateUser,
   userLogin,
 } from '../firebase/users';
 import { BaseError } from '../errorHandler/baseErrors';
@@ -16,9 +15,9 @@ import {
   isValidEmail,
 } from '../errorHandler/validations';
 
-const request = require('supertest');
+//const request = require('supertest'); //express
 
-let testUser1: User = {
+const testUser1: User = {
   id: '',
   firstName: 'Thor',
   lastName: 'Hansen',
