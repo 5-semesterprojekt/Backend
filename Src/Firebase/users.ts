@@ -108,7 +108,8 @@ export async function userLogin(
     throw new BaseError('User does not exist in this organization', 401);
   }
   for (const doc of emailQuerySnapshot.docs) {
-    if (bcrypt.compare(password, doc.data().password)) {
+    const match = await bcrypt.compare(password, doc.data().password);
+    if (match) {
       const user: User = {
         firstName: doc.data()!.firstName,
         lastName: doc.data()!.lastName,
