@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { Event } from '../models/event';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
@@ -9,14 +9,11 @@ import {
   deleteEvent,
   updateEvent,
 } from '../firebase/events';
+import { eventValidationRules } from '../errorHandler/validations';
 
 const router = Router();
 
-const eventValidationRules = [
-  body('title').notEmpty().withMessage('Title is required'),
-  body('start').isISO8601().toDate().withMessage('Must have a time and date'),
-  body('end').isISO8601().toDate().withMessage('Must have a time and date'),
-];
+
 
 // create new
 router.post(
