@@ -29,10 +29,7 @@ export const errorResponder = (
 
 // Fallback Middleware function for returning
 // 404 error for undefined paths
-export const invalidPathHandler = (
-  request: Request,
-  response: Response,
-) => {
+export const invalidPathHandler = (request: Request, response: Response) => {
   response.status(404);
   response.send('invalid path');
 };

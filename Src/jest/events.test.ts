@@ -9,7 +9,7 @@ import {
 import { Event } from '../models/event';
 import { app } from '../index';
 import { BaseError } from '../errorHandler/baseErrors';
-import  request  from 'supertest';
+import request from 'supertest';
 
 const orgId: number = Math.floor(Math.random() * 10000) + 1;
 const startDate: Date = new Date('2018-12-17T23:24:00');

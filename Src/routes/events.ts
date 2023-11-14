@@ -13,8 +13,6 @@ import { eventValidationRules } from '../errorHandler/validations';
 
 const router = Router();
 
-
-
 // create new
 router.post(
   '/:orgId/',
