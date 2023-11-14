@@ -100,7 +100,10 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
     const user: User = await getUserById(req.params.id);
-    const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
+    let hashedPassword: string | undefined;
+    if(req.body.password){
+      hashedPassword = await bcrypt.hash(req.body.password, 10);
+    }
     const updatedUser: User = {
       id: req.params.id,
       firstName: req.body.firstName || user.firstName,
