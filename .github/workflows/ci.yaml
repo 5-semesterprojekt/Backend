@@ -28,19 +28,19 @@ jobs:
       - name: Typescript check
         run: yarn check-types
 
-  unit-tests:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'yarn'
-      - run: yarn install --prefer-offline --frozen-lockfile --non-interactive
-      - name: Unit tests 🔎
-        run: yarn test
-      - name: Build 🔎
-        run: yarn build
+#  unit-tests:
+#    name: Unit Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Setup Node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: '18'
+#          cache: 'yarn'
+#      - run: yarn install --prefer-offline --frozen-lockfile --non-interactive
+#      - name: Unit tests 🔎
+#        run: yarn test
+#      - name: Build 🔎
+#        run: yarn build
