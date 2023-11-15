@@ -14,10 +14,7 @@ import {
 } from '../firebase/users';
 import { auth, CustomRequest } from './auth';
 import bcrypt from 'bcrypt';
-import {
-  userValidationRules,
-  userLoginValidationRules,
-} from '../errorHandler/validations';
+import { userValidationRules, userLoginValidationRules } from '../errorHandler/validations';
 
 const router = Router();
 

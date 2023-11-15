@@ -10,11 +10,7 @@ export function isValidUser(user: User): boolean {
       isValidPassword(user.password)
     );
   }
-  return (
-    isValidEmail(user.email) &&
-    isValidName(user.firstName) &&
-    isValidName(user.lastName)
-  );
+  return isValidEmail(user.email) && isValidName(user.firstName) && isValidName(user.lastName);
 }
 
 // Function to check if a given string is a valid email address
@@ -32,8 +28,7 @@ export function isValidName(name: string): boolean {
 
 // Function to check if a given string is a valid password (at least 8 characters and one uppercase letter and have a number and a special character)
 export function isValidPassword(password: string): boolean {
-  const passwordRegex =
-    /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/;
+  const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/;
   return passwordRegex.test(password);
 }
 

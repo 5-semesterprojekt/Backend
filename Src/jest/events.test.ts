@@ -103,9 +103,7 @@ describe('EXPRESS Event routes', () => {
   });
 
   test('Get one event', async () => {
-    const res = await request(app).get(
-      '/events/' + testEvent2.orgId + '/' + testEvent2.id,
-    );
+    const res = await request(app).get('/events/' + testEvent2.orgId + '/' + testEvent2.id);
     expect(res.body!.title).toBe(testEvent2.title);
     expect(res.body?.description).toBe(testEvent2.description);
     expect(res.body!.start).toStrictEqual(testEvent2.start.toISOString());
@@ -137,12 +135,8 @@ describe('EXPRESS Event routes', () => {
   });
 
   test('Delete event', async () => {
-    const res = await request(app).delete(
-      '/events/' + testEvent2.orgId + '/' + testEvent2.id,
-    );
-    await request(app).delete(
-      '/events/' + testEvent.orgId + '/' + testEvent.id,
-    );
+    const res = await request(app).delete('/events/' + testEvent2.orgId + '/' + testEvent2.id);
+    await request(app).delete('/events/' + testEvent.orgId + '/' + testEvent.id);
     expect(res.statusCode).toBe(204);
   });
 });
