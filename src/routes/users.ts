@@ -12,7 +12,7 @@ import {
   userLogin,
   getUserByToken,
 } from '../firebase/users';
-import { auth, CustomRequest } from './auth';
+import { auth, CustomRequest } from '../middleware/auth';
 import bcrypt from 'bcrypt';
 import { userValidationRules, userLoginValidationRules } from '../errorHandler/validations';
 

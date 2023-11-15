@@ -10,8 +10,10 @@ import {
   getDoc,
   deleteDoc,
 } from 'firebase/firestore';
+// @ts-ignore
 import { db } from '../secrets/firebaseConfig';
 import jwt from 'jsonwebtoken';
+// @ts-ignore
 import { SECRET_KEY } from '../secrets/jwtSecretKey';
 import { BaseError } from '../errorHandler/baseErrors';
 import { isValidUser } from '../errorHandler/validations';
