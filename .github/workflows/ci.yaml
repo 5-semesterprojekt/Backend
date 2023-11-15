@@ -25,6 +25,8 @@ jobs:
         run: yarn eslint .
       - name: Prettier check
         run: yarn prettier . --check
+      - name: File check
+        run: ls
       - name: Typescript check
         run: yarn check-types
 
