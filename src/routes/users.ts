@@ -108,8 +108,8 @@ router.put(
       password: hashedPassword || user.password,
       orgId: [parseInt(req.params.orgId)],
     };
-    updateUser(updatedUser);
-    res.status(204).end();
+    const newUserInfo = await updateUser(updatedUser);
+    res.json(newUserInfo);
   }),
 );
 
