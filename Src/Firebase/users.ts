@@ -136,10 +136,8 @@ export async function userLogin(
   );
 }
 //hashes password in routes intill i know a better way
-export async function updateUser(user: User) {
-  if (!isValidUser(user)) {
-    throw new BaseError('User is not valid', 400);
-  }
+export async function updateUser(user: User): Promise<User> {
+ 
   const updateUser = doc(db, 'users', `${user.id}`);
   await updateDoc(updateUser, {
     firstName: user.firstName,
@@ -150,6 +148,7 @@ export async function updateUser(user: User) {
   if (!updateUser) {
     throw new BaseError('User not found', 404);
   }
+  return user;
 }
 
 export async function deleteUser(user: User) {
