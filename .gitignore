@@ -2,3 +2,5 @@ node_modules/
 src/secrets/firebaseconfig.ts
 src/secrets/jwtSecretKey.ts
 yarn-error.log
+.eslintcache
+/dist/**
