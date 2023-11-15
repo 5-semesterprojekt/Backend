@@ -61,7 +61,8 @@ router.post(
 router.get(
   '/:orgId/',
   auth,
-  asyncHandler(async (req: Request, res: Response) => {const users = await getAllUsersByOrgId(parseInt(req.params.orgId));
+  asyncHandler(async (req: Request, res: Response) => {
+    const users = await getAllUsersByOrgId(parseInt(req.params.orgId));
     res.json(users);
   }),
 );
