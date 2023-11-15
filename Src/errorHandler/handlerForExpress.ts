@@ -14,11 +14,7 @@ export const errorLogger = (
 
 // Error handling Middleware function reads the error message
 // and sends back a response in JSON format
-export const errorResponder = (
-  error: Error,
-  request: Request,
-  response: Response,
-) => {
+export const errorResponder = (error: Error, request: Request, response: Response) => {
   response.header('Content-Type', 'application/json');
   if (error instanceof BaseError) {
     response.status(error.status).send(error.message);

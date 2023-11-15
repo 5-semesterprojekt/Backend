@@ -9,11 +9,7 @@ import {
   userLogin,
 } from '../firebase/users';
 import { BaseError } from '../errorHandler/baseErrors';
-import {
-  isValidName,
-  isValidPassword,
-  isValidEmail,
-} from '../errorHandler/validations';
+import { isValidName, isValidPassword, isValidEmail } from '../errorHandler/validations';
 
 //const request = require('supertest'); //express
 

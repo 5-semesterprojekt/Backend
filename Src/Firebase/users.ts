@@ -19,10 +19,7 @@ import bcrypt from 'bcrypt';
 
 //should return a token aswell
 export async function createUser(newUser: User): Promise<User> {
-  const emailQuery = query(
-    collection(db, 'users'),
-    where('email', '==', newUser.email),
-  );
+  const emailQuery = query(collection(db, 'users'), where('email', '==', newUser.email));
   const emailQuerySnapshot = await getDocs(emailQuery);
   if (!emailQuerySnapshot.empty) {
     throw new BaseError('That email is allready in the system', 400);
@@ -53,10 +50,7 @@ export async function createUser(newUser: User): Promise<User> {
 }
 
 export async function getAllUsersByOrgId(orgId: number): Promise<User[]> {
-  const q = query(
-    collection(db, 'users'),
-    where('orgId', 'array-contains', orgId),
-  );
+  const q = query(collection(db, 'users'), where('orgId', 'array-contains', orgId));
   const usersList = await getDocs(q);
   const users: User[] = usersList.docs.map((docSnap) => {
     const data: User = {
@@ -101,10 +95,7 @@ export async function userLogin(
   password: string,
   orgId: string,
 ): Promise<{ user: User }> {
-  const emailQuery = query(
-    collection(db, 'users'),
-    where('email', '==', email),
-  );
+  const emailQuery = query(collection(db, 'users'), where('email', '==', email));
   const emailQuerySnapshot = await getDocs(emailQuery);
 
   if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
@@ -130,10 +121,7 @@ export async function userLogin(
       return { user };
     }
   }
-  throw new BaseError(
-    'User did not complete the login because something was spelt wrong!',
-    401,
-  );
+  throw new BaseError('User did not complete the login because something was spelt wrong!', 401);
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: User) {
