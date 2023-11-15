@@ -28,7 +28,7 @@
     "serve": "node dist/index.js",
     "test": "jest --watch",
     "martin": "prettier . --write",
-    "type-check": "tsc --noEmit",
+    "check": "tsc --noEmit",
     "lint": "eslint src/**/*.ts"
   },
   "dependencies": {

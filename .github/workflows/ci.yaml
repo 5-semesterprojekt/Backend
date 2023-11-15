@@ -26,7 +26,7 @@ jobs:
       - name: Prettier check
         run: yarn prettier . --check **/*.{js,ts}
       - name: Typescript check
-        run: yarn check-types
+        run: yarn check
 
 #  unit-tests:
 #    name: Unit Tests
