@@ -47,8 +47,7 @@ router.post(
 router.post(
   `/:orgId/login`,
   userLoginValidationRules,
-  asyncHandler(async (req: Request, res: Response) => {
-    const user: { user: User } = await userLogin(
+  asyncHandler(async (req: Request, res: Response) => {const user: { user: User } = await userLogin(
       req.body.email,
       req.body.password,
       req.params.orgId,
