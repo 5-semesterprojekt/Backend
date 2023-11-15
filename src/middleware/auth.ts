@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+// @ts-ignore
 import { SECRET_KEY } from '../secrets/jwtSecretKey';
 
 export interface CustomRequest extends Request {
@@ -11,7 +12,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
-      //ToDo: make it to a base error
+      //ToDo: make it to a base error :)
       throw new Error();
     }
 

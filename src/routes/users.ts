@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { User } from '../models/user';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
@@ -12,17 +12,12 @@ import {
   userLogin,
   getUserByToken,
 } from '../firebase/users';
-import { auth, CustomRequest } from './auth';
+import { auth, CustomRequest } from '../middleware/auth';
 import bcrypt from 'bcrypt';
+import { userValidationRules, userLoginValidationRules } from '../errorHandler/validations';
 
 const router = Router();
 
-const userValidationRules = [
-  body('firstName').notEmpty().withMessage('firstName is required'),
-  body('lastName').notEmpty().withMessage('firstName is required'),
-  body('email').notEmpty().withMessage('email is required'),
-  body('password').notEmpty().withMessage('password is required'),
-];
 // create user
 router.post(
   '/:orgId/',
@@ -51,6 +46,7 @@ router.post(
 //user logs in
 router.post(
   `/:orgId/login`,
+  userLoginValidationRules,
   asyncHandler(async (req: Request, res: Response) => {
     const user: { user: User } = await userLogin(
       req.body.email,
@@ -101,7 +97,7 @@ router.put(
     }
     const user: User = await getUserById(req.params.id);
     let hashedPassword: string | undefined;
-    if(req.body.password){
+    if (req.body.password) {
       hashedPassword = await bcrypt.hash(req.body.password, 10);
     }
     const updatedUser: User = {

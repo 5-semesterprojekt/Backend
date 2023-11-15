@@ -2,11 +2,7 @@ import express, { Request, Response } from 'express';
 import eventRoutes from './routes/events';
 import userRoutes from './routes/users';
 import cors from 'cors';
-import {
-  errorLogger,
-  errorResponder,
-  invalidPathHandler,
-} from './errorHandler/handlerForExpress';
+import { errorLogger, errorResponder, invalidPathHandler } from './errorHandler/handlerForExpress';
 
 export const app = express();
 const port = process.env.PORT || 3000;

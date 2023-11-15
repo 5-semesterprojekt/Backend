@@ -14,11 +14,7 @@ export const errorLogger = (
 
 // Error handling Middleware function reads the error message
 // and sends back a response in JSON format
-export const errorResponder = (
-  error: Error,
-  request: Request,
-  response: Response,
-) => {
+export const errorResponder = (error: Error, request: Request, response: Response) => {
   response.header('Content-Type', 'application/json');
   if (error instanceof BaseError) {
     response.status(error.status).send(error.message);
@@ -29,10 +25,7 @@ export const errorResponder = (
 
 // Fallback Middleware function for returning
 // 404 error for undefined paths
-export const invalidPathHandler = (
-  request: Request,
-  response: Response,
-) => {
+export const invalidPathHandler = (request: Request, response: Response) => {
   response.status(404);
   response.send('invalid path');
 };

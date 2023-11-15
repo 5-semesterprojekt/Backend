@@ -3,14 +3,11 @@
 .vscode
 dist
 node_modules/
-**/l/**
-build/
 
 # Files
 .npmrc
 .prettierignore
 .prettierrc
-netlify.toml
 
 # File extensions
 **/*.json
@@ -18,3 +15,4 @@ netlify.toml
 **/*.md
 **/*.html
 **/*.yaml
+**/*.lock

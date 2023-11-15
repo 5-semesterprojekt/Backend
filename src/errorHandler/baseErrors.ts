@@ -1,11 +1,7 @@
 export class BaseError extends Error {
   public status: number;
   public errors?: any;
-  constructor(
-    message: string = 'Base error',
-    status: number = 500,
-    errors?: any,
-  ) {
+  constructor(message: string = 'Base error', status: number = 500, errors?: any) {
     super();
     super.message = message;
     super.name = codeToMessage(status);
