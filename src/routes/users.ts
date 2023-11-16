@@ -14,7 +14,9 @@ import {
 } from '../firebase/users';
 import { auth, CustomRequest } from '../middleware/auth';
 import bcrypt from 'bcrypt';
-import { userValidationRules, userLoginValidationRules } from '../errorHandler/validations';
+import { userValidationRules, userLoginValidationRules, commonPasswords100 } from '../errorHandler/validations';
+import { celebrate, Joi, Segments } from 'celebrate';
+import { passwordStrength } from 'check-password-strength'
 
 const router = Router();
 
@@ -22,6 +24,20 @@ const router = Router();
 router.post(
   '/:orgId/',
   userValidationRules,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      firstName: Joi.string().alphanum().regex(/[^a-zæøåA-ZÆØÅ\-\s]+/).min(2).max(64).required(),
+      lastName: Joi.string().alphanum().regex(/[^a-zæøåA-ZÆØÅ\-\s]+/).min(2).max(64).required(),
+      email: Joi.string().required().email(),
+      password: Joi.string()
+        .required()
+        .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/)
+        .min(8)
+        .max(64)
+        .not(commonPasswords100),
+      repeat_password: Joi.ref("password"),
+    }),
+  }),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -37,7 +53,9 @@ router.post(
       password: req.body.password,
       orgId: [parseInt(req.params.orgId)],
     };
-
+    if (passwordStrength(newUser.password!).value === 'Too weak') {
+      return res.status(400).json({ errors: 'Password is too weak' });
+    }
     const user = await createUser(newUser);
     res.status(201).json(user);
   }),
