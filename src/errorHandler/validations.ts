@@ -1,5 +1,4 @@
 import { User } from '../models/user';
-import { body } from 'express-validator';
 
 export function isValidUser(user: User): boolean {
   if (user.password) {
