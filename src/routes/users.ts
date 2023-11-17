@@ -33,7 +33,6 @@ router.post(
         .max(64)
         .required(),
       lastName: Joi.string()
-        .alphanum()
         .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
         .min(2)
         .max(64)
