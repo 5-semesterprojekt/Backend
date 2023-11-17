@@ -113,6 +113,7 @@ describe('EXPRESS Event routes', () => {
 
   test('Get one event', async () => {
     const res = await request(app).get('/events/' + orgId + '/' + expressId);
+    expect(res.statusCode).toBe(200);
     expect(res.body!.title).toBe(expressEvent.title);
     expect(res.body?.description).toBe(expressEvent.description);
     expect(res.body!.start).toStrictEqual(expressEvent.start);
