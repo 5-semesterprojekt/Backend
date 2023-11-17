@@ -3,6 +3,7 @@ import eventRoutes from './routes/events';
 import userRoutes from './routes/users';
 import cors from 'cors';
 import { errorLogger, errorResponder, invalidPathHandler } from './errorHandler/handlerForExpress';
+import { errors } from 'celebrate';
 
 export const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +19,8 @@ app.get('/', (req: Request, res: Response) => {
     'Hello dumbass, this is the backend. Go to <a href="https://localhost:3010/">localhost:3010/</a> to see the app',
   );
 });
+//something something
+app.use(errors());
 
 // Attach the first Error handling Middleware
 // function defined above (which logs the error)
