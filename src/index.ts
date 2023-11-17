@@ -19,7 +19,7 @@ app.get('/', (req: Request, res: Response) => {
     'Hello dumbass, this is the backend. Go to <a href="https://localhost:3010/">localhost:3010/</a> to see the app',
   );
 });
-//something something
+// Catch celebrate validation errors
 app.use(errors());
 
 // Attach the first Error handling Middleware
