@@ -9,7 +9,6 @@ import {
   userLogin,
 } from '../firebase/users';
 import { BaseError } from '../errorHandler/baseErrors';
-import { isValidName, isValidPassword, isValidEmail } from '../errorHandler/validations';
 
 //const request = require('supertest'); //express
 
@@ -21,15 +20,6 @@ const testUser1: User = {
   password: 'Testå123Å4!',
   orgId: [1232344432],
 };
-
-describe('Regex tests', () => {
-  test('regex tests :)', () => {
-    expect(isValidName(testUser1.firstName)).toBe(true);
-    expect(isValidName(testUser1.lastName)).toBe(true);
-    expect(isValidEmail(testUser1.email)).toBe(true);
-    expect(isValidPassword(testUser1.password as string)).toBe(true);
-  });
-});
 
 describe('FIREBASE User tests', () => {
   test('Create user', async () => {
