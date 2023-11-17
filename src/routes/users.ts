@@ -28,7 +28,6 @@ router.post(
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       firstName: Joi.string()
-        .alphanum()
         .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
         .min(2)
         .max(64)
