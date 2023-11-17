@@ -124,6 +124,7 @@ describe('EXPRESS Event routes', () => {
   test('Get events by orgId', async () => {
     const res = await request(app).get('/events/' + orgId);
     const corretId = res.body.find((ev: Event) => ev.id === expressId);
+    expect(res.statusCode).toBe(200);
     expect(corretId!.title).toBe(expressEvent.title);
     expect(corretId?.description).toBe(expressEvent.description);
     expect(corretId!.start).toStrictEqual(expressEvent.start);
