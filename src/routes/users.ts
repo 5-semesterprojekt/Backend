@@ -73,6 +73,7 @@ router.post(
       password: Joi.string()
         .required()
         .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/)
+        .min(8)
         .max(64),
     }),
   }),
