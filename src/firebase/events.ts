@@ -39,8 +39,8 @@ export async function getAllEventsByOrgId(orgId: number): Promise<Event[]> {
   const eventsList = await getDocs(q);
   const events: Event[] = [];
   eventsList.forEach((docSnap) => {
-    const startDate: Date = docSnap.data().start.toDate();
-    const endDate: Date = docSnap.data().end.toDate();
+    const startDate = docSnap.data().start;
+    const endDate = docSnap.data().end;
     const data: Event = {
       description: docSnap.data()?.description,
       start: startDate,
@@ -61,8 +61,8 @@ export async function getEventById(id: string): Promise<Event> {
   const docRef = doc(db, 'events', id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    const startDate: Date = docSnap.data().start.toDate();
-    const endDate: Date = docSnap.data().end.toDate();
+    const startDate = docSnap.data().start;
+    const endDate = docSnap.data().end;
     const data: Event = {
       description: docSnap.data()?.description,
       start: startDate,
