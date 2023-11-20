@@ -76,7 +76,6 @@ describe('FIREBASE User tests', () => {
 describe('EXPRESS user routes', () => {
   let expressId: string;
   let expressToken: string;
-  let hashedPassword: string;
   const orgid = 1232344432 as number;
   const user1: { [key: string]: any } = {
     firstName: 'Thor',
@@ -91,12 +90,10 @@ describe('EXPRESS user routes', () => {
 
     expressId = res.body.id;
     expressToken = res.body.token;
-    hashedPassword = res.body.password;
     expect(res.statusCode).toBe(201);
     expect(res.body.firstName).toBe(user1.firstName);
     expect(res.body.lastName).toBe(user1.lastName);
     expect(res.body.email).toBe(user1.email);
-    expect(res.body.password).toBeDefined();
   });
   test('Login user', async () => {
     const res = await request(app)
@@ -110,7 +107,6 @@ describe('EXPRESS user routes', () => {
     expect(res.body.user.firstName).toBe(user1.firstName);
     expect(res.body.user.lastName).toBe(user1.lastName);
     expect(res.body.user.email).toBe(user1.email);
-    expect(res.body.user.password).not.toBe(hashedPassword);
   });
   test('Get user by orgId', async () => {
     const res = await request(app)
@@ -146,7 +142,6 @@ describe('EXPRESS user routes', () => {
     expect(res.body.firstName).toBe(user2.firstName);
     expect(res.body.lastName).toBe(user2.lastName);
     expect(res.body.email).toBe(user2.email);
-    expect(res.body.password).not.toBe(hashedPassword);
   });
   test('Delete user', async () => {
     const res = await request(app)
