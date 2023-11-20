@@ -6,7 +6,7 @@ import { errorLogger, errorResponder, invalidPathHandler } from './errorHandler/
 import { errors } from 'celebrate';
 
 export const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cors());
@@ -34,6 +34,8 @@ app.use(errorResponder);
 // function which sends back the response for invalid paths)
 app.use(invalidPathHandler);
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
