@@ -44,6 +44,7 @@ export async function createUser(newUser: User): Promise<User> {
   });
   user.token = token;
   await setDoc(docRef, user);
+  delete user.password;
   if (!user) {
     throw new BaseError('User not created', 400);
   }
@@ -84,7 +85,6 @@ export async function getUserById(id: string): Promise<User> {
   return data as User;
 }
 export async function getUserByToken(id: string): Promise<User> {
-  //const decodedUser = jwt.verify(token, SECRET_KEY);
   const user = await getUserById(id);
   if (!user) {
     throw new BaseError('User not found', 404);
@@ -127,17 +127,18 @@ export async function userLogin(
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: User): Promise<User> {
- 
   const updateUser = doc(db, 'users', `${user.id}`);
   await updateDoc(updateUser, {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
     orgId: user.orgId,
+    password: user.password,
   });
   if (!updateUser) {
     throw new BaseError('User not found', 404);
   }
+  delete user.password;
   return user;
 }
 

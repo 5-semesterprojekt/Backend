@@ -14,21 +14,42 @@ import {
 } from '../firebase/users';
 import { auth, CustomRequest } from '../middleware/auth';
 import bcrypt from 'bcrypt';
-import { userValidationRules, userLoginValidationRules } from '../errorHandler/validations';
+import { commonPasswords100 } from '../errorHandler/validations';
+import { celebrate, Joi, Segments } from 'celebrate';
+import { BaseError } from '../errorHandler/baseErrors';
 
 const router = Router();
+/*******************/
+/*** CREATE USER ***/
+/*******************/
 
-// create user
 router.post(
   '/:orgId/',
-  userValidationRules,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      firstName: Joi.string()
+        .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
+        .min(2)
+        .max(64)
+        .required(),
+      lastName: Joi.string()
+        .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
+        .min(2)
+        .max(64)
+        .required(),
+      email: Joi.string().required().email(),
+      password: Joi.string()
+        .required()
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-ZÆØÅa-zæøå\d@$!%*?&]{8,}$/)
+        .min(8)
+        .max(64),
+      repeatPassword: Joi.ref('password'),
+    }),
+  }),
   asyncHandler(async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    if (commonPasswords100.includes(req.body.password)) {
+      throw new BaseError('Password is too common', 400);
     }
-
     const newUser: User = {
       id: '',
       firstName: req.body.firstName,
@@ -37,16 +58,26 @@ router.post(
       password: req.body.password,
       orgId: [parseInt(req.params.orgId)],
     };
-
     const user = await createUser(newUser);
     res.status(201).json(user);
   }),
 );
+/******************/
+/*** USER LOGIN ***/
+/******************/
 
-//user logs in
 router.post(
   `/:orgId/login`,
-  userLoginValidationRules,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string()
+        .required()
+        .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/)
+        .min(8)
+        .max(64),
+    }),
+  }),
   asyncHandler(async (req: Request, res: Response) => {
     const user: { user: User } = await userLogin(
       req.body.email,
@@ -56,8 +87,10 @@ router.post(
     res.status(200).json(user);
   }),
 );
+/****************************/
+/*** GET ALL USERS BY ORG ***/
+/****************************/
 
-//get users by orgId
 router.get(
   '/:orgId/',
   auth,
@@ -66,7 +99,9 @@ router.get(
     res.json(users);
   }),
 );
-//get user by token
+/****************************/
+/*** GET USER BY TOKEN/ID ***/
+/****************************/
 router.get(
   '/:orgId/me',
   auth,
@@ -76,7 +111,10 @@ router.get(
     res.json(user);
   }),
 );
-//get user by id
+/**********************/
+/*** GET USER BY ID ***/
+/**********************/
+
 router.get(
   '/:orgId/:id',
   auth,
@@ -85,8 +123,10 @@ router.get(
     res.json(user);
   }),
 );
+/**********************/
+/**** UPDATE USER *****/
+/**********************/
 
-//update user
 router.put(
   '/:orgId/:id',
   auth,
@@ -112,8 +152,10 @@ router.put(
     res.json(newUserInfo);
   }),
 );
+/**********************/
+/**** DELETE USER *****/
+/**********************/
 
-//delete user
 router.delete(
   '/:orgId/:id',
   auth,

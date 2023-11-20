@@ -11,22 +11,21 @@ import { app } from '../index';
 import { BaseError } from '../errorHandler/baseErrors';
 import request from 'supertest';
 
-const orgId: number = Math.floor(Math.random() * 10000) + 1;
 const startDate: Date = new Date('2018-12-17T23:24:00');
 const endDate: Date = new Date('2019-12-17T03:24:00');
 const testEvent: Event = {
   title: 'Test Event',
   description: 'Test Description',
-  start: startDate,
-  end: endDate,
-  orgId: orgId,
+  start: startDate.toISOString(),
+  end: endDate.toISOString(),
+  orgId: 15551,
 };
 const testEvent2: Event = {
   title: 'Test Event 2',
   description: 'Test Description 2',
-  start: startDate,
-  end: endDate,
-  orgId: orgId,
+  start: startDate.toISOString(),
+  end: endDate.toISOString(),
+  orgId: 15551,
 };
 
 /******************/
@@ -80,6 +79,7 @@ describe('FIREBASE Event tests', () => {
 
   test('Delete event/Ask for wrong ID', async () => {
     await deleteEvent(testEvent);
+    await deleteEvent(testEvent2);
     await expect(getEventById(testEvent.id!)).rejects.toThrow(BaseError);
   });
 });
@@ -89,54 +89,65 @@ describe('FIREBASE Event tests', () => {
 /******************/
 
 describe('EXPRESS Event routes', () => {
+  const orgId = Math.floor(Math.random() * 10000) + 1;
+  let expressId: string;
+  const expressEvent: { [key: string]: any } = {
+    title: 'Test Event 3',
+    description: 'Test Description 3',
+    start: startDate.toISOString(),
+    end: endDate.toISOString(),
+  };
   test('create', async () => {
     const res = await request(app)
-      .post('/events/' + testEvent.orgId)
-      .send(testEvent);
-    testEvent.id = res.body.id;
-    expect(res.body!.id).toBe(testEvent.id);
-    expect(res.body!.title).toBe(testEvent.title);
-    expect(res.body?.description).toBe(testEvent.description);
-    expect(res.body!.start).toStrictEqual(testEvent.start.toISOString());
-    expect(res.body!.end).toStrictEqual(testEvent.end.toISOString());
-    expect(res.body!.orgId).toBe(testEvent.orgId);
+      .post('/events/' + orgId)
+      .send(expressEvent);
+    expressId = res.body.id;
+    expect(res.statusCode).toBe(201);
+    expect(res.body!.id).toBeDefined();
+    expect(res.body!.title).toBe(expressEvent.title);
+    expect(res.body?.description).toBe(expressEvent.description);
+    expect(res.body!.start).toStrictEqual(expressEvent.start);
+    expect(res.body!.end).toStrictEqual(expressEvent.end);
+    expect(res.body!.orgId).toBe(orgId);
   });
 
   test('Get one event', async () => {
-    const res = await request(app).get('/events/' + testEvent2.orgId + '/' + testEvent2.id);
-    expect(res.body!.title).toBe(testEvent2.title);
-    expect(res.body?.description).toBe(testEvent2.description);
-    expect(res.body!.start).toStrictEqual(testEvent2.start.toISOString());
-    expect(res.body!.end).toStrictEqual(testEvent2.end.toISOString());
-    expect(res.body!.orgId).toBe(testEvent2.orgId);
+    const res = await request(app).get('/events/' + orgId + '/' + expressId);
+    expect(res.statusCode).toBe(200);
+    expect(res.body!.title).toBe(expressEvent.title);
+    expect(res.body?.description).toBe(expressEvent.description);
+    expect(res.body!.start).toStrictEqual(expressEvent.start);
+    expect(res.body!.end).toStrictEqual(expressEvent.end);
+    expect(res.body!.orgId).toBe(orgId);
   });
 
   test('Get events by orgId', async () => {
-    const res = await request(app).get('/events/' + testEvent2.orgId);
-    const corretId = res.body.find((ev: Event) => ev.id === testEvent2.id);
-    expect(corretId!.title).toBe(testEvent2.title);
-    expect(corretId?.description).toBe(testEvent2.description);
-    expect(corretId!.start).toStrictEqual(testEvent2.start.toISOString());
-    expect(corretId!.end).toStrictEqual(testEvent2.end.toISOString());
-    expect(corretId!.orgId).toBe(testEvent2.orgId);
-    expect(res.body.length).toBe(2);
+    const res = await request(app).get('/events/' + orgId);
+    const corretId = res.body.find((ev: Event) => ev.id === expressId);
+    expect(res.statusCode).toBe(200);
+    expect(corretId!.title).toBe(expressEvent.title);
+    expect(corretId?.description).toBe(expressEvent.description);
+    expect(corretId!.start).toStrictEqual(expressEvent.start);
+    expect(corretId!.end).toStrictEqual(expressEvent.end);
+    expect(corretId!.orgId).toBe(orgId);
+    expect(res.body.length).toBe(1);
   });
 
   test('Update event', async () => {
-    testEvent2.title = 'Updated Test Event API';
+    expressEvent.title = 'Updated Test Event API';
     const res = await request(app)
-      .put('/events/' + testEvent2.orgId + '/' + testEvent2.id)
-      .send(testEvent2);
-    expect(res.body!.title).toBe(testEvent2.title);
-    expect(res.body?.description).toBe(testEvent2.description);
-    expect(res.body!.start).toStrictEqual(testEvent2.start.toISOString());
-    expect(res.body!.end).toStrictEqual(testEvent2.end.toISOString());
-    expect(res.body!.orgId).toBe(testEvent2.orgId);
+      .put('/events/' + orgId + '/' + expressId)
+      .send(expressEvent);
+    expect(res.statusCode).toBe(200);
+    expect(res.body!.title).toBe(expressEvent.title);
+    expect(res.body?.description).toBe(expressEvent.description);
+    expect(res.body!.start).toStrictEqual(expressEvent.start);
+    expect(res.body!.end).toStrictEqual(expressEvent.end);
+    expect(res.body!.orgId).toBe(orgId);
   });
 
   test('Delete event', async () => {
-    const res = await request(app).delete('/events/' + testEvent2.orgId + '/' + testEvent2.id);
-    await request(app).delete('/events/' + testEvent.orgId + '/' + testEvent.id);
+    const res = await request(app).delete('/events/' + orgId + '/' + expressId);
     expect(res.statusCode).toBe(204);
   });
 });
