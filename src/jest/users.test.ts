@@ -94,6 +94,7 @@ describe('EXPRESS user routes', () => {
     expect(res.body.firstName).toBe(user1.firstName);
     expect(res.body.lastName).toBe(user1.lastName);
     expect(res.body.email).toBe(user1.email);
+    expect(res.body).not.toHaveProperty('password');
   });
   test('Login user', async () => {
     const res = await request(app)
@@ -107,6 +108,7 @@ describe('EXPRESS user routes', () => {
     expect(res.body.user.firstName).toBe(user1.firstName);
     expect(res.body.user.lastName).toBe(user1.lastName);
     expect(res.body.user.email).toBe(user1.email);
+    expect(res.body).not.toHaveProperty('password');
   });
   test('Get user by orgId', async () => {
     const res = await request(app)
@@ -117,6 +119,7 @@ describe('EXPRESS user routes', () => {
     expect(user.firstName).toBe(user1.firstName);
     expect(user.lastName).toBe(user1.lastName);
     expect(user.email).toBe(user1.email);
+    expect(res.body).not.toHaveProperty('password');
   });
   test('Get user by token', async () => {
     const res = await request(app)
@@ -126,14 +129,15 @@ describe('EXPRESS user routes', () => {
     expect(res.body.firstName).toBe(user1.firstName);
     expect(res.body.lastName).toBe(user1.lastName);
     expect(res.body.email).toBe(user1.email);
+    expect(res.body).not.toHaveProperty('password');
   });
+  const user2: { [key: string]: any } = {
+    firstName: 'Thor',
+    lastName: 'Hansen',
+    email: 'updatedtest@mail.com',
+    password: 'Testå123Å4!!!!!',
+  };
   test('Update user', async () => {
-    const user2: { [key: string]: any } = {
-      firstName: 'Thor',
-      lastName: 'Hansen',
-      email: 'updatedtest@mail.com',
-      password: 'Testå123Å4!!!!!',
-    };
     const res = await request(app)
       .put('/users/' + orgid + '/' + expressId)
       .set('Authorization', 'Bearer ' + expressToken)
@@ -142,12 +146,27 @@ describe('EXPRESS user routes', () => {
     expect(res.body.firstName).toBe(user2.firstName);
     expect(res.body.lastName).toBe(user2.lastName);
     expect(res.body.email).toBe(user2.email);
+    expect(res.body).not.toHaveProperty('password');
+  });
+  test('Login user after password change', async () => {
+    const res = await request(app)
+      .post('/users/' + orgid + '/login')
+      .send({
+        email: user2.email,
+        password: user2.password,
+      })
+      .set('Authorization', 'Bearer ' + expressToken);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user.firstName).toBe(user2.firstName);
+    expect(res.body.user.lastName).toBe(user2.lastName);
+    expect(res.body.user.email).toBe(user2.email);
+    expect(res.body).not.toHaveProperty('password');
   });
   test('Delete user', async () => {
     const res = await request(app)
       .delete('/users/' + orgid + '/' + expressId)
       .set('Authorization', 'Bearer ' + expressToken);
-    console.log('logind user body thing', res.body);
+    expect(res.body).not.toHaveProperty('password');
     expect(res.statusCode).toBe(204);
   });
 });
