@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 import { Event } from '../models/event';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import { celebrate, Joi, Segments } from 'celebrate';
@@ -11,10 +10,8 @@ import {
   updateEvent,
   userCheckOrgId,
 } from '../firebase/events';
-import { eventValidationRules } from '../errorHandler/validations';
 import { auth, CustomRequest } from '../middleware/auth';
 import { BaseError } from '../errorHandler/baseErrors';
-
 
 const router = Router();
 
@@ -79,7 +76,7 @@ router.put(
   }),
   auth,
   asyncHandler(async (req: CustomRequest, res: Response) => {
-  await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
     const event: Event = await getEventById(req.params.id);
 
     if (!event) {
@@ -99,13 +96,7 @@ router.put(
 // delete by id
 router.delete(
   '/:orgId/:id',
-  eventValidationRules,
   auth,
-  asyncHandler(async (req: CustomRequest, res: Response) => {
-    const event: Event = await getEventById(req.params.id);
-    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
-
-auth,
   asyncHandler(async (req: CustomRequest, res: Response) => {
     const event: Event = await getEventById(req.params.id);
     await userCheckOrgId(req.token as string, parseInt(req.params.orgId));

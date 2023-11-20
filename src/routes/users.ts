@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import { validationResult } from 'express-validator';
-import { User } from '../models/user';
+import { BeforeCreateUser, User } from '../models/user';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
   createUser,
@@ -50,8 +50,7 @@ router.post(
     if (commonPasswords100.includes(req.body.password)) {
       throw new BaseError('Password is too common', 400);
     }
-    const newUser: User = {
-      id: '',
+    const newUser: BeforeCreateUser = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,

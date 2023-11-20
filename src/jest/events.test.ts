@@ -10,6 +10,8 @@ import { Event } from '../models/event';
 import { app } from '../index';
 import { BaseError } from '../errorHandler/baseErrors';
 import request from 'supertest';
+import { createUser, deleteUser } from '../firebase/users';
+import { User } from '../models/user';
 
 const startDate: Date = new Date('2018-12-17T23:24:00');
 const endDate: Date = new Date('2019-12-17T03:24:00');
@@ -90,6 +92,8 @@ describe('FIREBASE Event tests', () => {
 
 describe('EXPRESS Event routes', () => {
   const orgId = Math.floor(Math.random() * 10000) + 1;
+  let userWithToken: User;
+
   let expressId: string;
   const expressEvent: { [key: string]: any } = {
     title: 'Test Event 3',
@@ -98,9 +102,17 @@ describe('EXPRESS Event routes', () => {
     end: endDate.toISOString(),
   };
   test('create', async () => {
+    userWithToken = await createUser({
+      firstName: 'Thor',
+      lastName: 'Hansen',
+      email: 'testmail@hotaaaaamail.com',
+      password: 'Testå123Å4123!',
+      orgId: [orgId],
+    });
     const res = await request(app)
       .post('/events/' + orgId)
-      .send(expressEvent);
+      .send(expressEvent)
+      .set('Authorization', 'Bearer ' + userWithToken.token);
     expressId = res.body.id;
     expect(res.statusCode).toBe(201);
     expect(res.body!.id).toBeDefined();
@@ -137,7 +149,8 @@ describe('EXPRESS Event routes', () => {
     expressEvent.title = 'Updated Test Event API';
     const res = await request(app)
       .put('/events/' + orgId + '/' + expressId)
-      .send(expressEvent);
+      .send(expressEvent)
+      .set('Authorization', 'Bearer ' + userWithToken.token);
     expect(res.statusCode).toBe(200);
     expect(res.body!.title).toBe(expressEvent.title);
     expect(res.body?.description).toBe(expressEvent.description);
@@ -147,7 +160,10 @@ describe('EXPRESS Event routes', () => {
   });
 
   test('Delete event', async () => {
-    const res = await request(app).delete('/events/' + orgId + '/' + expressId);
+    const res = await request(app)
+      .delete('/events/' + orgId + '/' + expressId)
+      .set('Authorization', 'Bearer ' + userWithToken.token);
     expect(res.statusCode).toBe(204);
+    await deleteUser(userWithToken);
   });
 });
