@@ -1,5 +1,5 @@
 //import { app } from '../index';
-import { User } from '../models/user';
+import { User, BeforeCreateUser } from '../models/user';
 import { expect, test } from '@jest/globals';
 import {
   createUser,
@@ -14,8 +14,7 @@ import request from 'supertest';
 
 //const request = require('supertest'); //express
 
-const testUser1: User = {
-  id: '',
+const createTestUser: BeforeCreateUser = {
   firstName: 'Thor',
   lastName: 'Hansen',
   email: 'testmail@hotmail.com',
@@ -24,48 +23,47 @@ const testUser1: User = {
 };
 
 describe('FIREBASE User tests', () => {
+  let testUser: User;
   test('Create user', async () => {
-    const data: User = await createUser(testUser1);
-    testUser1.id = data.id;
-    expect(data.firstName).toBe(testUser1.firstName);
-    expect(data.lastName).toBe(testUser1.lastName);
-    expect(data.email).toBe(testUser1.email);
-    expect(data.orgId).toStrictEqual(testUser1.orgId);
+    testUser = await createUser(createTestUser);
+    expect(testUser.firstName).toBe(createTestUser.firstName);
+    expect(testUser.lastName).toBe(createTestUser.lastName);
+    expect(testUser.email).toBe(createTestUser.email);
+    expect(testUser.orgId).toStrictEqual(createTestUser.orgId);
   });
-
   test('Get user by orgId', async () => {
-    const data = await getAllUsersByOrgId(testUser1.orgId![0]);
-    const corretId = data.find((e) => e.id === testUser1.id);
-    expect(corretId?.firstName).toBe(testUser1.firstName);
-    expect(corretId?.lastName).toBe(testUser1.lastName);
-    expect(corretId?.email).toBe(testUser1.email);
-    expect(corretId?.orgId).toStrictEqual(testUser1.orgId);
+    const data = await getAllUsersByOrgId(testUser.orgId![0]);
+    const corretId = data.find((e) => e.id === testUser.id);
+    expect(corretId?.firstName).toBe(testUser.firstName);
+    expect(corretId?.lastName).toBe(testUser.lastName);
+    expect(corretId?.email).toBe(testUser.email);
+    expect(corretId?.orgId).toStrictEqual(testUser.orgId);
     expect(data.length).toBe(1);
   });
 
   test('Get user by id', async () => {
-    const data = await getUserById(testUser1.id!);
-    expect(data.firstName).toBe(testUser1.firstName);
-    expect(data.lastName).toBe(testUser1.lastName);
-    expect(data.email).toBe(testUser1.email);
-    expect(data.orgId).toStrictEqual(testUser1.orgId);
+    const data = await getUserById(testUser.id);
+    expect(data.firstName).toBe(testUser.firstName);
+    expect(data.lastName).toBe(testUser.lastName);
+    expect(data.email).toBe(testUser.email);
+    expect(data.orgId).toStrictEqual(testUser.orgId);
   });
   test('User login', async () => {
     const data = await userLogin(
-      testUser1.email,
-      testUser1.password as string,
-      testUser1.orgId![0].toString(),
+      testUser.email,
+      createTestUser.password as string,
+      testUser.orgId![0].toString(),
     );
-    expect(data.user.firstName).toBe(testUser1.firstName);
-    expect(data.user.lastName).toBe(testUser1.lastName);
-    expect(data.user.email).toBe(testUser1.email);
-    expect(data.user.orgId[0]).toStrictEqual(testUser1.orgId);
-    expect(data.user.id).toBe(testUser1.id);
+    expect(data.user.firstName).toBe(testUser.firstName);
+    expect(data.user.lastName).toBe(testUser.lastName);
+    expect(data.user.email).toBe(testUser.email);
+    expect(data.user.orgId[0]).toStrictEqual(testUser.orgId);
+    expect(data.user.id).toBe(testUser.id);
   });
 
   test('Delete user', async () => {
-    await deleteUser(testUser1);
-    await expect(getUserById(testUser1.id!)).rejects.toThrow(BaseError);
+    await deleteUser(testUser);
+    await expect(getUserById(testUser.id)).rejects.toThrow(BaseError);
   });
 });
 
@@ -76,7 +74,7 @@ describe('FIREBASE User tests', () => {
 describe('EXPRESS user routes', () => {
   let expressId: string;
   let expressToken: string;
-  const orgid = 1232344432 as number;
+  const orgid = [1232344432] as Array<number>;
   const user1: { [key: string]: any } = {
     firstName: 'Thor',
     lastName: 'Hansen',

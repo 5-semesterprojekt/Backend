@@ -1,4 +1,4 @@
-import { User } from '../models/user';
+import { User, BeforeCreateUser } from '../models/user';
 import {
   collection,
   getDocs,
@@ -16,18 +16,14 @@ import jwt from 'jsonwebtoken';
 // @ts-ignore
 import { SECRET_KEY } from '../secrets/jwtSecretKey';
 import { BaseError } from '../errorHandler/baseErrors';
-import { isValidUser } from '../errorHandler/validations';
 import bcrypt from 'bcrypt';
 
 //should return a token aswell
-export async function createUser(newUser: User): Promise<User> {
+export async function createUser(newUser: BeforeCreateUser): Promise<User> {
   const emailQuery = query(collection(db, 'users'), where('email', '==', newUser.email));
   const emailQuerySnapshot = await getDocs(emailQuery);
   if (!emailQuerySnapshot.empty) {
     throw new BaseError('That email is allready in the system', 400);
-  }
-  if (!isValidUser(newUser)) {
-    throw new BaseError('User is not valid', 400);
   }
   const hashedPassword: string = await bcrypt.hash(newUser.password!, 10);
   const docRef = doc(collection(db, `users`));

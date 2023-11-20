@@ -17,6 +17,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const decoded = jwt.verify(token, SECRET_KEY) as { id: string };
+    //Decodes the token to the id of the user
     (req as CustomRequest).token = decoded.id;
     next();
   } catch (err) {

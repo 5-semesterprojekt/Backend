@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 import { Event } from '../models/event';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import { celebrate, Joi, Segments } from 'celebrate';
@@ -9,7 +8,9 @@ import {
   getEventById,
   deleteEvent,
   updateEvent,
+  userCheckOrgId,
 } from '../firebase/events';
+import { auth, CustomRequest } from '../middleware/auth';
 import { BaseError } from '../errorHandler/baseErrors';
 
 const router = Router();
@@ -25,11 +26,9 @@ router.post(
       description: Joi.string(),
     }),
   }),
-  asyncHandler(async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
     const event: Event = {
       title: req.body.title,
       description: req.body.description,
@@ -75,7 +74,9 @@ router.put(
       description: Joi.string(),
     }),
   }),
-  asyncHandler(async (req: Request, res: Response) => {
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
     const event: Event = await getEventById(req.params.id);
 
     if (!event) {
@@ -95,9 +96,10 @@ router.put(
 // delete by id
 router.delete(
   '/:orgId/:id',
-  asyncHandler(async (req: Request, res: Response) => {
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
     const event: Event = await getEventById(req.params.id);
-
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
     if (!event) {
       res.status(404).send('Event not found');
     } else {
