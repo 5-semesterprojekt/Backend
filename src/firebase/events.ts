@@ -102,6 +102,6 @@ export async function deleteEvent(event: Event) {
 export async function userCheckOrgId(userToken: string, orgId: number) {
   const user: User = await getUserByToken(userToken);
   if (!user.orgId.includes(orgId)) {
-    throw new BaseError('User is not apart of this org', 401);
+    throw new BaseError('User is not apart of this organization', 401);
   }
 }
