@@ -6,7 +6,7 @@ import { errorLogger, errorResponder, invalidPathHandler } from './errorHandler/
 import { errors } from 'celebrate';
 
 export const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
