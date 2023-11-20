@@ -43,7 +43,7 @@ router.post(
         .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-ZÆØÅa-zæøå\d@$!%*?&]{8,}$/)
         .min(8)
         .max(64),
-      repeat_password: Joi.ref('password'),
+      repeatPassword: Joi.ref('password'),
     }),
   }),
   asyncHandler(async (req: Request, res: Response) => {
