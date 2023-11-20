@@ -49,9 +49,6 @@ export async function getAllEventsByOrgId(orgId: number): Promise<Event[]> {
     };
     events.push(data);
   });
-  if (!events.length) {
-    return events as Event[];
-  }
   return events as Event[];
 }
 
