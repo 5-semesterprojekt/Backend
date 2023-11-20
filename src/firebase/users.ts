@@ -126,7 +126,6 @@ export async function userLogin(
 }
 //hashes password in routes intill i know a better way
 export async function updateUser(user: User): Promise<User> {
- 
   const updateUser = doc(db, 'users', `${user.id}`);
   await updateDoc(updateUser, {
     firstName: user.firstName,

@@ -21,7 +21,6 @@ router.post(
   eventValidationRules,
   auth,
   asyncHandler(async (req: CustomRequest, res: Response) => {
-
     await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
 
     //id might be a problem
@@ -95,7 +94,7 @@ router.delete(
   auth,
   asyncHandler(async (req: CustomRequest, res: Response) => {
     const event: Event = await getEventById(req.params.id);
-    await userCheckOrgId(req.token as string, parseInt(req.params.orgId))
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
     if (!event) {
       res.status(404).send('Event not found');
     } else {
