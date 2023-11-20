@@ -13,6 +13,8 @@ import {
 // @ts-ignore
 import { db } from '../secrets/firebaseConfig';
 import { BaseError } from '../errorHandler/baseErrors';
+import { getUserByToken } from './users';
+import { User } from '../models/user';
 //firebase events.ts
 
 export async function createEvent(event: Event): Promise<Event> {
@@ -94,5 +96,12 @@ export async function deleteEvent(event: Event) {
   await deleteDoc(deleteEvent);
   if (!deleteEvent) {
     throw new BaseError('Event not found', 404);
+  }
+}
+
+export async function userCheckOrgId(userToken: string, orgId: number) {
+  const user: User = await getUserByToken(userToken);
+  if (!user.orgId.includes(orgId)) {
+    throw new BaseError('User is not apart of this org', 401);
   }
 }

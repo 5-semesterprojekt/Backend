@@ -84,7 +84,6 @@ export async function getUserById(id: string): Promise<User> {
   return data as User;
 }
 export async function getUserByToken(id: string): Promise<User> {
-  //const decodedUser = jwt.verify(token, SECRET_KEY);
   const user = await getUserById(id);
   if (!user) {
     throw new BaseError('User not found', 404);

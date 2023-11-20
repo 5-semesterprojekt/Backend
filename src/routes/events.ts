@@ -8,8 +8,10 @@ import {
   getEventById,
   deleteEvent,
   updateEvent,
+  userCheckOrgId,
 } from '../firebase/events';
 import { eventValidationRules } from '../errorHandler/validations';
+import { auth, CustomRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -17,12 +19,10 @@ const router = Router();
 router.post(
   '/:orgId/',
   eventValidationRules,
-  asyncHandler(async (req: Request, res: Response) => {
-    const errors = validationResult(req);
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
 
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
 
     //id might be a problem
     const event: Event = {
@@ -64,13 +64,15 @@ router.get(
 router.put(
   '/:orgId/:id',
   eventValidationRules,
-  asyncHandler(async (req: Request, res: Response) => {
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId));
 
-    const event: Event | undefined = await getEventById(req.params.id);
+    const event: Event = await getEventById(req.params.id);
 
     if (!event) {
       res.status(404).send('Event not found');
@@ -90,9 +92,10 @@ router.put(
 router.delete(
   '/:orgId/:id',
   eventValidationRules,
-  asyncHandler(async (req: Request, res: Response) => {
-    const event: Event | undefined = await getEventById(req.params.id);
-
+  auth,
+  asyncHandler(async (req: CustomRequest, res: Response) => {
+    const event: Event = await getEventById(req.params.id);
+    await userCheckOrgId(req.token as string, parseInt(req.params.orgId))
     if (!event) {
       res.status(404).send('Event not found');
     } else {
