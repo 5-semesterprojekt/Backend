@@ -207,10 +207,10 @@ describe('Test meant to fail', () => {
       });
     expect(res.statusCode).toBe(400);
   });
-  const userWithTokenPassword ='Asd!!!asdD23123';
+  const userWithTokenPassword = 'Asd!!!asdD23123';
   let userWithToken: User;
   test('Create user with email allready in the system', async () => {
-      const deleteRes = await request(app)
+    const deleteRes = await request(app)
       .post('/users/' + [1232344432])
       .send({
         firstName: 'Thor',
@@ -218,8 +218,8 @@ describe('Test meant to fail', () => {
         email: 'asdfasdfasdf@hotmail.com',
         password: 'Asd!!!asdD23123',
       });
-      userWithToken = deleteRes.body;
-      const res = await request(app)
+    userWithToken = deleteRes.body;
+    const res = await request(app)
       .post('/users/' + [1232344432])
       .send({
         firstName: 'Thor',
@@ -229,7 +229,6 @@ describe('Test meant to fail', () => {
       });
     expect(deleteRes.statusCode).toBe(201);
     expect(res.statusCode).toBe(400);
-    
   });
   test('login with wrong password', async () => {
     const res = await request(app)
@@ -248,8 +247,8 @@ describe('Test meant to fail', () => {
         email: 'wrongEmail@mail.com',
         password: userWithTokenPassword,
       });
-      
-      console.log(res.body)
+
+    console.log(res.body);
     expect(res.statusCode).toBe(401);
   });
 
@@ -265,8 +264,8 @@ describe('Test meant to fail', () => {
   });
   test('Get me by orgId with wrong token', async () => {
     const res = await request(app)
-    .post('/users/' + [1232344432] + '/me')
-    .set('Authorization', 'Bearer ' + 'wrongToken');
+      .post('/users/' + [1232344432] + '/me')
+      .set('Authorization', 'Bearer ' + 'wrongToken');
     expect(res.statusCode).toBe(500);
   });
   test('Create user with wrong reapeat password', async () => {
@@ -281,4 +280,4 @@ describe('Test meant to fail', () => {
       });
     expect(res.statusCode).toBe(400);
   });
-})
+});
