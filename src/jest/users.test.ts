@@ -255,7 +255,7 @@ describe('Test meant to fail', () => {
         password: userWithTokenPassword,
       });
     expect(res.statusCode).toBe(401);
-    await deleteUser(userWithToken); //test
+    await deleteUser(userWithToken);
   });
   test('Fail to fetch user details by organization ID with an invalid token via the EXPRESS user route', async () => {
     const res = await request(app)
