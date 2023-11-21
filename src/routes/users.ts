@@ -1,6 +1,4 @@
 import { Router, Request, Response } from 'express';
-
-import { validationResult } from 'express-validator';
 import { BeforeCreateUser, User } from '../models/user';
 import { asyncHandler } from '../errorHandler/asyncHandler';
 import {
@@ -148,10 +146,6 @@ router.put(
     }),
   }),
   asyncHandler(async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
     const user: User = await getUserById(req.params.id);
     let hashedPassword: string | undefined;
     if (req.body.password) {

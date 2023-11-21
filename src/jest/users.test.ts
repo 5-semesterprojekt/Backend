@@ -268,6 +268,17 @@ describe('Test meant to fail', () => {
     .post('/users/' + [1232344432] + '/me')
     .set('Authorization', 'Bearer ' + 'wrongToken');
     expect(res.statusCode).toBe(500);
-  }
-  );
+  });
+  test('Create user with wrong reapeat password', async () => {
+    const res = await request(app)
+      .post('/users/' + [1232344432])
+      .send({
+        firstName: 'Thor',
+        lastName: 'Hansen',
+        email: 'asdfasdfasdf@hotmail.com',
+        password: 'Asd!!!asdD23123',
+        repeatPassword: 'Asd!!!asdD23123!',
+      });
+    expect(res.statusCode).toBe(400);
+  });
 })
