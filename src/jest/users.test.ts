@@ -1,4 +1,3 @@
-//import { app } from '../index';
 import { User, BeforeCreateUser } from '../models/user';
 import { expect, test } from '@jest/globals';
 import {
@@ -12,24 +11,28 @@ import { BaseError } from '../errorHandler/baseErrors';
 import { app } from '../index';
 import request from 'supertest';
 
-const createTestUser: BeforeCreateUser = {
-  firstName: 'Thor',
-  lastName: 'Hansen',
-  email: 'testmail@hotmail.com',
-  password: 'Testå123Å4!',
-  orgId: [1232344432],
-};
-
 describe('FIREBASE User tests', () => {
+  const createTestUser: BeforeCreateUser = {
+    firstName: 'Thor',
+    lastName: 'Hansen',
+    email: 'testmail@hotmail.com',
+    password: 'Testå123Å4!',
+    orgId: [1232344432],
+  };
   let testUser: User;
-  test('Create user', async () => {
+  beforeAll(async () => {
     testUser = await createUser(createTestUser);
+  });
+  afterAll(async () => {
+    await deleteUser(testUser);
+  });
+  test('Successfully create a user in the FIREBASE User service', async () => {
     expect(testUser.firstName).toBe(createTestUser.firstName);
     expect(testUser.lastName).toBe(createTestUser.lastName);
     expect(testUser.email).toBe(createTestUser.email);
     expect(testUser.orgId).toStrictEqual(createTestUser.orgId);
   });
-  test('Get user by orgId', async () => {
+  test('Successfully retrieve a user by organization ID from the FIREBASE User service', async () => {
     const data = await getAllUsersByOrgId(testUser.orgId![0]);
     const corretId = data.find((e) => e.id === testUser.id);
     expect(corretId?.firstName).toBe(testUser.firstName);
@@ -39,14 +42,14 @@ describe('FIREBASE User tests', () => {
     expect(data.length).toBe(1);
   });
 
-  test('Get user by id', async () => {
+  test('Successfully fetch a user by user ID from the FIREBASE User service', async () => {
     const data = await getUserById(testUser.id);
     expect(data.firstName).toBe(testUser.firstName);
     expect(data.lastName).toBe(testUser.lastName);
     expect(data.email).toBe(testUser.email);
     expect(data.orgId).toStrictEqual(testUser.orgId);
   });
-  test('User login', async () => {
+  test('Successfully log in a user via the FIREBASE User service', async () => {
     const data = await userLogin(
       testUser.email,
       createTestUser.password as string,
@@ -59,8 +62,7 @@ describe('FIREBASE User tests', () => {
     expect(data.user.id).toBe(testUser.id);
   });
 
-  test('Delete user', async () => {
-    await deleteUser(testUser);
+  test('Successfully delete a user from the FIREBASE User service', async () => {
     await expect(getUserById(testUser.id)).rejects.toThrow(BaseError);
   });
 });
@@ -92,7 +94,7 @@ describe('EXPRESS user routes', () => {
     expect(res.body.email).toBe(user1.email);
     expect(res.body).not.toHaveProperty('password');
   });
-  test('Login user', async () => {
+  test('Successfully log in a user via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgid + '/login')
       .send({
@@ -117,7 +119,7 @@ describe('EXPRESS user routes', () => {
     expect(user.email).toBe(user1.email);
     expect(res.body).not.toHaveProperty('password');
   });
-  test('Get user by token', async () => {
+  test('Successfully retrieve a user by token from the EXPRESS user route', async () => {
     const res = await request(app)
       .get('/users/' + orgid + '/me')
       .set('Authorization', 'Bearer ' + expressToken);
@@ -133,7 +135,7 @@ describe('EXPRESS user routes', () => {
     email: 'updatedtest@mail.com',
     password: 'Testå123Å4!!!!!',
   };
-  test('Update user', async () => {
+  test('Successfully update a user via the EXPRESS user route', async () => {
     const res = await request(app)
       .put('/users/' + orgid + '/' + expressId)
       .set('Authorization', 'Bearer ' + expressToken)
@@ -144,7 +146,7 @@ describe('EXPRESS user routes', () => {
     expect(res.body.email).toBe(user2.email);
     expect(res.body).not.toHaveProperty('password');
   });
-  test('Login user after password change', async () => {
+  test('Successfully log in a user after password change via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgid + '/login')
       .send({
@@ -171,7 +173,7 @@ describe('EXPRESS user routes', () => {
 /*TEST THAT WILL FAIL*/
 /*********************/
 describe('Test meant to fail', () => {
-  test('Create user with common password', async () => {
+  test('Fail to create a user with a common password via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432])
       .send({
@@ -182,7 +184,7 @@ describe('Test meant to fail', () => {
       });
     expect(res.statusCode).toBe(400);
   });
-  test('Create user with wrong email', async () => {
+  test('Fail to create a user with an invalid email format via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432])
       .send({
@@ -193,7 +195,7 @@ describe('Test meant to fail', () => {
       });
     expect(res.statusCode).toBe(400);
   });
-  test('Create user with not enough chars', async () => {
+  test('Fail to create a user with insufficient characters in a field via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432])
       .send({
@@ -206,7 +208,7 @@ describe('Test meant to fail', () => {
   });
   const userWithTokenPassword = 'Asd!!!asdD23123';
   let userWithToken: User;
-  test('Create user with email allready in the system', async () => {
+  test('Fail to create a user with an existing email via the EXPRESS user route', async () => {
     const deleteRes = await request(app)
       .post('/users/' + [1232344432])
       .send({
@@ -227,7 +229,7 @@ describe('Test meant to fail', () => {
     expect(deleteRes.statusCode).toBe(201);
     expect(res.statusCode).toBe(400);
   });
-  test('login with wrong password', async () => {
+  test('Fail to authenticate a user with an incorrect password via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432] + '/login')
       .send({
@@ -237,19 +239,17 @@ describe('Test meant to fail', () => {
     expect(res.statusCode).toBe(401);
   });
 
-  test('login with wrong email', async () => {
+  test('Fail to authenticate a user with an incorrect email via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432] + '/login')
       .send({
         email: 'wrongEmail@mail.com',
         password: userWithTokenPassword,
       });
-
-    console.log(res.body);
     expect(res.statusCode).toBe(401);
   });
 
-  test('login with wrong orgId', async () => {
+  test('Fail to authenticate a user with an incorrect organization ID via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [123] + '/login')
       .send({
@@ -259,13 +259,13 @@ describe('Test meant to fail', () => {
     expect(res.statusCode).toBe(401);
     await deleteUser(userWithToken);
   });
-  test('Get me by orgId with wrong token', async () => {
+  test('Fail to fetch user details by organization ID with an invalid token via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432] + '/me')
       .set('Authorization', 'Bearer ' + 'wrongToken');
     expect(res.statusCode).toBe(500);
   });
-  test('Create user with wrong reapeat password', async () => {
+  test('Fail to create a user with inconsistent repeat password via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + [1232344432])
       .send({
