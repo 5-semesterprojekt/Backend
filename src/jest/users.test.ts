@@ -171,9 +171,10 @@ describe('EXPRESS user routes', () => {
 /*TEST THAT WILL FAIL*/
 /*********************/
 describe('Test meant to fail', () => {
+  const orgId = 1232344432 as number;
   test('Fail to create a user with a common password via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + [1232344432])
+      .post('/users/' + orgId)
       .send({
         firstName: 'Thor',
         lastName: 'Hansen',
@@ -184,7 +185,7 @@ describe('Test meant to fail', () => {
   });
   test('Fail to create a user with an invalid email format via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + 1232344432)
+      .post('/users/' + orgId)
       .send({
         firstName: 'Thor',
         lastName: 'Hansen',
@@ -195,7 +196,7 @@ describe('Test meant to fail', () => {
   });
   test('Fail to create a user with insufficient characters in a field via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + 1232344432)
+      .post('/users/' + orgId)
       .send({
         firstName: 'T',
         lastName: 'Hansen',
@@ -207,29 +208,29 @@ describe('Test meant to fail', () => {
   const userWithTokenPassword = 'Asd!!!asdD23123';
   let userWithToken: User;
   test('Fail to create a user with an existing email via the EXPRESS user route', async () => {
-    const deleteRes = await request(app)
-      .post('/users/' + 1232344432)
+    const res1 = await request(app)
+      .post('/users/' + orgId)
       .send({
         firstName: 'Thor',
         lastName: 'Hansen',
         email: 'asdfasdfasdf@hotmail.com',
         password: 'Asd!!!asdD23123',
       });
-    userWithToken = deleteRes.body;
-    const res = await request(app)
-      .post('/users/' + 1232344432)
+    userWithToken = res1.body;
+    const res2 = await request(app)
+      .post('/users/' + orgId)
       .send({
         firstName: 'Thor',
         lastName: 'Hansen',
         email: 'asdfasdfasdf@hotmail.com',
         password: 'Asd!!!asdD23123',
       });
-    expect(deleteRes.statusCode).toBe(201);
-    expect(res.statusCode).toBe(400);
+    expect(res1.statusCode).toBe(201);
+    expect(res2.statusCode).toBe(400);
   });
   test('Fail to authenticate a user with an incorrect password via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + 1232344432 + '/login')
+      .post('/users/' + orgId + '/login')
       .send({
         email: userWithToken.email,
         password: 'wrongPassword!1!',
@@ -239,7 +240,7 @@ describe('Test meant to fail', () => {
 
   test('Fail to authenticate a user with an incorrect email via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + 1232344432 + '/login')
+      .post('/users/' + orgId + '/login')
       .send({
         email: 'wrongEmail@mail.com',
         password: userWithTokenPassword,
@@ -259,13 +260,13 @@ describe('Test meant to fail', () => {
   });
   test('Fail to fetch user details by organization ID with an invalid token via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + 1232344432 + '/me')
+      .post('/users/' + orgId + '/me')
       .set('Authorization', 'Bearer ' + 'wrongToken');
     expect(res.statusCode).toBe(500);
   });
   test('Fail to create a user with inconsistent repeat password via the EXPRESS user route', async () => {
     const res = await request(app)
-      .post('/users/' + 1232344432)
+      .post('/users/' + orgId)
       .send({
         firstName: 'Thor',
         lastName: 'Hansen',
