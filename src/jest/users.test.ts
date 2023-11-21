@@ -11,9 +11,6 @@ import {
 import { BaseError } from '../errorHandler/baseErrors';
 import { app } from '../index';
 import request from 'supertest';
-import { create } from 'domain';
-
-//const request = require('supertest'); //express
 
 const createTestUser: BeforeCreateUser = {
   firstName: 'Thor',
