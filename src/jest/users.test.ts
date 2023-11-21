@@ -11,6 +11,7 @@ import {
 import { BaseError } from '../errorHandler/baseErrors';
 import { app } from '../index';
 import request from 'supertest';
+import { create } from 'domain';
 
 //const request = require('supertest'); //express
 
@@ -168,3 +169,105 @@ describe('EXPRESS user routes', () => {
     expect(res.statusCode).toBe(204);
   });
 });
+
+/*********************/
+/*TEST THAT WILL FAIL*/
+/*********************/
+describe('Test meant to fail', () => {
+  test('Create user with common password', async () => {
+    const res = await request(app)
+      .post('/users/' + [1232344432])
+      .send({
+        firstName: 'Thor',
+        lastName: 'Hansen',
+        email: 'asdfasdfasdf@hotmail.com',
+        password: '987654321',
+      });
+    expect(res.statusCode).toBe(400);
+  });
+  test('Create user with wrong email', async () => {
+    const res = await request(app)
+      .post('/users/' + [1232344432])
+      .send({
+        firstName: 'Thor',
+        lastName: 'Hansen',
+        email: 'notAnEmail@.gh',
+        password: 'Asd!!!asdD23123',
+      });
+    expect(res.statusCode).toBe(400);
+  });
+  test('Create user with not enough chars', async () => {
+    const res = await request(app)
+      .post('/users/' + [1232344432])
+      .send({
+        firstName: 'T',
+        lastName: 'Hansen',
+        email: 'notAnEmail@.gh',
+        password: 'Asd!!!asdD23123',
+      });
+    expect(res.statusCode).toBe(400);
+  });
+  const userWithTokenPassword ='Asd!!!asdD23123';
+  let userWithToken: User;
+  test('Create user with email allready in the system', async () => {
+      const deleteRes = await request(app)
+      .post('/users/' + [1232344432])
+      .send({
+        firstName: 'Thor',
+        lastName: 'Hansen',
+        email: 'asdfasdfasdf@hotmail.com',
+        password: 'Asd!!!asdD23123',
+      });
+      userWithToken = deleteRes.body;
+      const res = await request(app)
+      .post('/users/' + [1232344432])
+      .send({
+        firstName: 'Thor',
+        lastName: 'Hansen',
+        email: 'asdfasdfasdf@hotmail.com',
+        password: 'Asd!!!asdD23123',
+      });
+    expect(deleteRes.statusCode).toBe(201);
+    expect(res.statusCode).toBe(400);
+    
+  });
+  test('login with wrong password', async () => {
+    const res = await request(app)
+      .post('/users/' + [1232344432] + '/login')
+      .send({
+        email: userWithToken.email,
+        password: 'wrongPassword!1!',
+      });
+    expect(res.statusCode).toBe(401);
+  });
+
+  test('login with wrong email', async () => {
+    const res = await request(app)
+      .post('/users/' + [1232344432] + '/login')
+      .send({
+        email: 'wrongEmail@mail.com',
+        password: userWithTokenPassword,
+      });
+      
+      console.log(res.body)
+    expect(res.statusCode).toBe(401);
+  });
+
+  test('login with wrong orgId', async () => {
+    const res = await request(app)
+      .post('/users/' + [123] + '/login')
+      .send({
+        email: userWithToken.email,
+        password: userWithTokenPassword,
+      });
+    expect(res.statusCode).toBe(401);
+    await deleteUser(userWithToken);
+  });
+  test('Get me by orgId with wrong token', async () => {
+    const res = await request(app)
+    .post('/users/' + [1232344432] + '/me')
+    .set('Authorization', 'Bearer ' + 'wrongToken');
+    expect(res.statusCode).toBe(500);
+  }
+  );
+})
