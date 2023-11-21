@@ -129,6 +129,24 @@ router.get(
 router.put(
   '/:orgId/:id',
   auth,
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      firstName: Joi.string()
+        .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
+        .min(2)
+        .max(64),
+      lastName: Joi.string()
+        .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
+        .min(2)
+        .max(64),
+      email: Joi.string().email(),
+      password: Joi.string()
+        .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/)
+        .min(8)
+        .max(64),
+      repeatPassword: Joi.ref('password'),
+    }),
+  }),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
