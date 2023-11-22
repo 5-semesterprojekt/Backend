@@ -147,10 +147,9 @@ export async function deleteUser(user: User) {
   }
 }
 
-export async function forgotPassword(email : string, orgId : string) {
+export async function forgotPassword(email: string, orgId: string) {
   const emailQuery = query(collection(db, 'users'), where('email', '==', email));
-  if(!emailQuery)
-  {
+  if (!emailQuery) {
     throw new BaseError('Email was not found', 404);
   }
   const emailQuerySnapshot = await getDocs(emailQuery);
@@ -158,15 +157,14 @@ export async function forgotPassword(email : string, orgId : string) {
     throw new BaseError('User does not exist in this organization', 401);
   }
   for (const doc of emailQuerySnapshot.docs) {
-      const user: User = {
-        firstName: doc.data()!.firstName,
-        lastName: doc.data()!.lastName,
-        email: doc.data()!.email,
-        id: doc.data()!.id,
-        orgId: [doc.data()!.orgId],
-      };
+    const user: User = {
+      firstName: doc.data()!.firstName,
+      lastName: doc.data()!.lastName,
+      email: doc.data()!.email,
+      id: doc.data()!.id,
+      orgId: [doc.data()!.orgId],
+    };
 
-      sendEmail(user, doc.data().token);
-    }
-  
+    sendEmail(user, doc.data().token);
+  }
 }
