@@ -18,9 +18,9 @@ export async function sendEmail(user: User, token: string) {
     subject: 'Testmail', // Subject line
     text: 'blah blah blah', // plain text body
     html:
-      '<a href="https://localhost:3010/"' +
+      '<a href="https://localhost:3010/glemt-adgangskode"' +
       token +
-      '>localhost:3010/forgot-password?' +
+      '>localhost:3010/glemt-adgangskode?' +
       token +
       '</a>' +
       ' uuuh hallo there, any hot guys on the line? like someone called' +
@@ -29,6 +29,4 @@ export async function sendEmail(user: User, token: string) {
       user.lastName +
       '</b>', // html body
   });
-
-  console.log('Message sent: %s', info.messageId);
 }
