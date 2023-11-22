@@ -20,7 +20,7 @@ export async function sendEmail(user: User, token: string) {
     html:
       '<a href="https://localhost:3010/"' +
       token +
-      '>localhost:3010/' +
+      '>localhost:3010/forgot-password?' +
       token +
       '</a>' +
       ' uuuh hallo there, any hot guys on the line? like someone called' +
