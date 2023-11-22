@@ -12,7 +12,7 @@ export async function sendEmail(user: User, token: string) {
     },
   });
   // send mail with defined transport object
-  const info = await transporter.sendMail({
+  await transporter.sendMail({
     from: `"5-semester procejct 👻" <${gmail}>`, // sender address
     to: user.email, // list of receivers
     subject: 'Testmail', // Subject line
