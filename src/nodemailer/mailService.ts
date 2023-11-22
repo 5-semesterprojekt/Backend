@@ -18,7 +18,7 @@ export async function sendEmail(user: User, token: string) {
     subject: 'Testmail', // Subject line
     text: 'blah blah blah', // plain text body
     html:
-      '<a href="https://localhost:3010/glemt-adgangskode"' +
+      '<a href="https://localhost:3010/glemt-adgangskode?"' +
       token +
       '>localhost:3010/glemt-adgangskode?' +
       token +
