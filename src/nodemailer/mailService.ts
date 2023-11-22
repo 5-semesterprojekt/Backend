@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { User } from '../models/user';
+// @ts-ignore
 import { gmail, gmailPassword } from '../secrets/gmailSecrets';
 
 export async function sendEmail(user: User, token: string) {
