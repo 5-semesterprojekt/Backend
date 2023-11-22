@@ -9,6 +9,7 @@ import {
   updateUser,
   userLogin,
   getUserByToken,
+  forgotPassword,
 } from '../firebase/users';
 import { auth, CustomRequest } from '../middleware/auth';
 import bcrypt from 'bcrypt';
@@ -174,6 +175,22 @@ router.delete(
     const user: User = await getUserById(req.params.id);
     await deleteUser(user);
     res.status(204).end();
+  }),
+);
+/************************/
+/**** FORGOT PASSWORD ***/
+/************************/
+
+router.post(
+  '/:orgId/forgot-password',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      email: Joi.string().required().email(),
+    }),
+  }),
+  asyncHandler(async (req: Request, res: Response) => {
+    await forgotPassword(req.body.email, req.params.orgId);
+    res.status(200).json({ message: 'Email sent' });
   }),
 );
 export default router;

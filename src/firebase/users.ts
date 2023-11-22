@@ -17,6 +17,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../secrets/jwtSecretKey';
 import { BaseError } from '../errorHandler/baseErrors';
 import bcrypt from 'bcrypt';
+import { sendEmail } from '../nodemailer/mailService';
 
 //should return a token aswell
 export async function createUser(newUser: BeforeCreateUser): Promise<User> {
@@ -144,4 +145,28 @@ export async function deleteUser(user: User) {
   if (!delteUser) {
     throw new BaseError('User not found', 404);
   }
+}
+
+export async function forgotPassword(email : string, orgId : string) {
+  const emailQuery = query(collection(db, 'users'), where('email', '==', email));
+  if(!emailQuery)
+  {
+    throw new BaseError('Email was not found', 404);
+  }
+  const emailQuerySnapshot = await getDocs(emailQuery);
+  if (emailQuerySnapshot.docs.find((doc) => doc.data().orgId != orgId)) {
+    throw new BaseError('User does not exist in this organization', 401);
+  }
+  for (const doc of emailQuerySnapshot.docs) {
+      const user: User = {
+        firstName: doc.data()!.firstName,
+        lastName: doc.data()!.lastName,
+        email: doc.data()!.email,
+        id: doc.data()!.id,
+        orgId: [doc.data()!.orgId],
+      };
+
+      sendEmail(user, doc.data().token);
+    }
+  
 }

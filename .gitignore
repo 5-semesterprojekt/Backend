@@ -1,6 +1,7 @@
 node_modules/
 src/secrets/firebaseconfig.ts
 src/secrets/jwtSecretKey.ts
+src/secrets/gmailSecrets.ts
 yarn-error.log
 .eslintcache
 /dist/**
