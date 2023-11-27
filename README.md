@@ -59,7 +59,7 @@ You can make youre own website or use our frontend that we have developed along 
 Starts the api, you would now be able to make calls, look at the api doc
 
 ### `yarn test`
-Runs all tests (see [vitest](https://vitest.dev/) for more).
+Runs all tests (see [jest](https://jestjs.io) for more).
 
 ### `yarn martin`
 **ToDo cahnge name**
