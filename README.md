@@ -127,15 +127,13 @@ POST /events/:orgId/
 **description** (string, optional): A description of the event.
 
 **Example:**
-
-```typescript
+```json
 // Call to localhost:3000/123
-const event: Event = {
+ {
   title: "some title",
   description: "some description",
   start: "2019-12-17T03:24:00",
   end: "2019-12-18T03:24:00",
-  orgId: parseInt(req.params.orgId), // Gets the id from the URL
 };
 ```
 #### Response
