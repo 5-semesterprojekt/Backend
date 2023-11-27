@@ -229,7 +229,7 @@ GET /:orgId/
 
 ## Get User by Token/ID
 **Needs to be logged in/auth token**
-
+A jwt token must be present in the [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization). This token is received by logging in.
 Retrieve the user associated with the provided token by making a **GET** request to the following endpoint:
 
 ```http
