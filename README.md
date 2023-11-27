@@ -85,7 +85,7 @@ Create a new event by making a POST request to the following endpoint:
 **Needs to be logged in/auth token**
 
 ```http
-POST /:orgId/
+POST /events/:orgId/
 ```
 #### Request Body
 **title** (string, required): The title of the event.
