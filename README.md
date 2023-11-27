@@ -1,6 +1,6 @@
 1. [**Setup**](#️-setup)
 
-2. [**Start**](#-start)
+2. [**Start**](#rocket-start)
 
 3. [**Scripts**](#-scripts)
 
@@ -11,9 +11,9 @@
    - [**Event**](#create-event)
    - [**Users**](#create-user)
 
-6. [**Error Handling Documentation**](#Error Handling Documentation)
+6. [**Error Handling Documentation**](#error-handling-documentation)
 
-7. [**Authentication Middleware Documentation**](#Authentication Middleware Documentation)
+8. [**Authentication Middleware Documentation**](#authentication-middleware-documentation)
 
 
 
