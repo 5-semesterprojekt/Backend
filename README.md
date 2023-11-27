@@ -1,3 +1,11 @@
+![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+
+Table of context
+
 1. [**Setup**](#️-setup)
 
 2. [**Start**](#rocket-start)
@@ -72,6 +80,9 @@ The backend can be started by running the start script:
 yarn start
 ```
 You can make youre own website or use our frontend that we have developed along with this backend. you can use our frontend from here https://github.com/5-semesterprojekt/Frontend.git
+
+<br>
+
 # 📜 Scripts
 
 ### `yarn start`
