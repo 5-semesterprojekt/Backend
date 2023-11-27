@@ -27,7 +27,7 @@ git clone https://github.com/5-semesterprojekt/Frontend.git
 firebaseConfig-example.ts
 
 
-After that is is also advised to change the example file and rename them without example at the end, at the moment there 3 files that has to change.
+After that it is also advised to change the example file and rename them without example at the end, at the moment there 3 files that has to change.
 first one is firebaseConfig-example.ts
 
 This one is simple, go to https://console.firebase.google.com and create a new project and copy paste youre own firestore config and copypaste it in the firebaseConfig-example.ts file and rename the file to firebaseConfig.ts
