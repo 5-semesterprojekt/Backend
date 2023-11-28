@@ -146,7 +146,7 @@ Response Body: The created event object with an additional **id** field.
 Retrieve all events for a specific organization by making a **GET** request to the following endpoint:
 
 ```http
-GET /:orgId/
+GET events/:orgId/
 ```
 #### Response
 **Status Code:** `200 OK` if the event is found.
@@ -167,7 +167,7 @@ GET /:orgId/
 Retrieve a specific event by its ID for a given organization by making a **GET** request to the following endpoint:
 
 ```http
-GET /:orgId/:id
+GET events/:orgId/:id
 ```
 **Response:**
 - **Status Code:** `200 OK` if the event is found, `404 Not Found` otherwise.
@@ -177,7 +177,7 @@ GET /:orgId/:id
 Update an existing event by making a **PUT** request to the following endpoint:
 
 ```http
-PUT /:orgId/:id
+PUT events/:orgId/:id
 ```
 
 **Request Body:**
@@ -200,7 +200,7 @@ PUT /:orgId/:id
 Delete a specific event by its ID for a given organization by making a **DELETE** request to the following endpoint:
 
 ```http
-DELETE /:orgId/:id
+DELETE events/:orgId/:id
 ```
 #### Response
 - **Status Code:** `204 No Content` if the event is deleted successfully, `404 Not Found` otherwise.
@@ -211,7 +211,7 @@ DELETE /:orgId/:id
 Create a new user by making a **POST** request to the following endpoint:
 
 ```http
-POST /:orgId/
+POST users/:orgId/
 ```
 
 **Request Body:**
@@ -236,7 +236,7 @@ POST /:orgId/
 Authenticate a user by making a **POST** request to the following endpoint:
 
 ```http
-POST /:orgId/login
+POST users/:orgId/login
 ```
 
 **Request Body:**
@@ -259,7 +259,7 @@ POST /:orgId/login
 Retrieve all users for a specific organization by making a **GET** request to the following endpoint:
 
 ```http
-GET /:orgId/
+GET users/:orgId/
 ```
 
 **Response:**
@@ -273,7 +273,7 @@ A jwt token must be present in the [Authorization header](https://developer.mozi
 Retrieve the user associated with the provided token by making a **GET** request to the following endpoint:
 
 ```http
-GET /:orgId/me
+GET users/:orgId/me
 ```
 
 **Response:**
@@ -287,7 +287,7 @@ GET /:orgId/me
 Retrieve a specific user by their ID for a given organization by making a **GET** request to the following endpoint:
 
 ```http
-GET /:orgId/:id
+GET users/:orgId/:id
 ```
 
 **Response:**
@@ -301,7 +301,7 @@ GET /:orgId/:id
 Update an existing user by making a **PUT** request to the following endpoint:
 
 ```http
-PUT /:orgId/:id
+PUT users/:orgId/:id
 ```
 
 **Request Body:**
@@ -323,7 +323,7 @@ PUT /:orgId/:id
 Delete a specific user by their ID for a given organization by making a **DELETE** request to the following endpoint:
 
 ```http
-DELETE /:orgId/:id
+DELETE users/:orgId/:id
 ```
 
 **Response:**
@@ -334,7 +334,7 @@ DELETE /:orgId/:id
 Initiate the forgot password process by making a **POST** request to the following endpoint:
 
 ```http
-POST /:orgId/forgot-password
+POST users/:orgId/forgot-password
 ```
 
 **Request Body:**
@@ -356,34 +356,6 @@ POST /:orgId/forgot-password
 
 The error handling module in this application is designed to manage and respond to errors that may occur during the execution of API endpoints. It includes middleware functions for logging errors, responding with appropriate error messages, and handling invalid paths.
 
-## Error Logger Middleware
-
-The `errorLogger` middleware function logs error messages to the console.
-
-### Usage
-
-```javascript
-import { errorLogger } from 'path-to-error-handler';
-
-// ... Other middleware and route handling
-
-app.use(errorLogger);
-```
-
-## Error Responder Middleware
-
-The ```errorResponder``` middleware function sends JSON-formatted error responses.
-
-### Usage
-
-```javascript
-import { errorResponder } from 'path-to-error-handler';
-
-// ... Other middleware and route handling
-
-app.use(errorResponder);
-```
-
 ### Custom Errors
 
 Custom errors, such as ```BaseError```, are supported. They can be thrown with a specific status code and optional error details.
@@ -394,39 +366,11 @@ import { BaseError } from 'path-to-error-handler';
 throw new BaseError('Custom error message', 404, { additionalInfo: 'details' });
 ```
 
-## Invalid Path Handler
-
-The ```invalidPathHandler``` middleware function handles undefined paths, returning a 404 error.
-
-### Usage
-
-```javascript
-import { invalidPathHandler } from 'path-to-error-handler';
-
-// ... Other middleware and route handling
-
-app.use(invalidPathHandler);
-```
-
 ## Password Validation
 
-A list of common passwords is available for use in password validation.
+We use a regex that have some requrements, there must be upper and lowercase chars and a number plus a special char to get through our validation, a little extra thing is our common password checker.
+We have a list of top 100 common passwords to check if it overlaps on any of them, if it does then it gets recejted
 
-### Usage
-
-```javascript
-import { commonPasswords100 } from 'path-to-error-handler';
-
-// Example of password validation
-const userPassword = 'password123';
-if (commonPasswords100.includes(userPassword)) {
-  // Password is common, handle accordingly
-}
-```
-
-### Common Passwords List
-
-The ```commonPasswords100``` array contains commonly used passwords and can be used for password strength validation.
 
 ## Notes
 
@@ -463,29 +407,7 @@ app.get('/authenticated-route', auth, (req: CustomRequest, res) => {
 });
 ```
 
-## Middleware Function
-
-
-The `auth` middleware function performs the following steps:
-
-1. Extracts the JWT token from the 'Authorization' header.
-2. Verifies the token's validity using the provided secret key.
-3. Decodes the token to retrieve the user ID.
-4. Attaches the user ID to the request object as `req.token`.
-5. Calls the next middleware or route handler if authentication is successful.
-
-### Custom Request Interface
-
-The `CustomRequest` interface extends the Express `Request` interface to include the `token` property.
-
 ### Error Handling
 
 If the token is missing or invalid, the middleware responds with a 401 status code and the message "Please authenticate."
-
-## Notes
-
-- Ensure that the `auth` middleware is appropriately placed in the middleware stack before routes that require authentication.
-- The `SECRET_KEY` should be securely stored, and the implementation should be modified based on the chosen method for secret key management.
-
-Feel free to customize and expand upon this documentation based on your specific application requirements.
 
