@@ -4,19 +4,22 @@ import userRoutes from './routes/users';
 import cors from 'cors';
 import { errorLogger, errorResponder, invalidPathHandler } from './errorHandler/handlerForExpress';
 import { errors } from 'celebrate';
+import helmet from 'helmet';
 
 export const app = express();
 const port = process.env.PORT || 3000;
 
+
 app.use(express.json());
 app.use(cors());
 
+app.use(helmet());
 app.use('/events', eventRoutes);
 app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send(
-    'Hello dumbass, this is the backend. Go to <a href="https://localhost:3010/">localhost:3010/</a> to see the app',
+    'Hello, this is the backend.',
   );
 });
 // Catch celebrate validation errors
