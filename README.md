@@ -130,10 +130,10 @@ POST /events/:orgId/
 ```json
 // Call to localhost:3000/123
  {
-  title: "some title",
-  description: "some description",
-  start: "2019-12-17T03:24:00",
-  end: "2019-12-18T03:24:00"
+  "title": "some title",
+  "description": "some description",
+  "start": "2019-12-17T03:24:00",
+  "end": "2019-12-18T03:24:00"
 };
 ```
 #### Response
@@ -146,7 +146,7 @@ Response Body: The created event object with an additional **id** field.
 Retrieve all events for a specific organization by making a **GET** request to the following endpoint:
 
 ```http
-GET events/:orgId/
+GET /events/:orgId/
 ```
 #### Response
 **Status Code:** `200 OK` if the event is found.
@@ -167,7 +167,7 @@ GET events/:orgId/
 Retrieve a specific event by its ID for a given organization by making a **GET** request to the following endpoint:
 
 ```http
-GET events/:orgId/:id
+GET /events/:orgId/:id
 ```
 **Response:**
 - **Status Code:** `200 OK` if the event is found, `404 Not Found` otherwise.
@@ -177,7 +177,7 @@ GET events/:orgId/:id
 Update an existing event by making a **PUT** request to the following endpoint:
 
 ```http
-PUT events/:orgId/:id
+PUT /events/:orgId/:id
 ```
 
 **Request Body:**
@@ -200,7 +200,7 @@ PUT events/:orgId/:id
 Delete a specific event by its ID for a given organization by making a **DELETE** request to the following endpoint:
 
 ```http
-DELETE events/:orgId/:id
+DELETE /events/:orgId/:id
 ```
 #### Response
 - **Status Code:** `204 No Content` if the event is deleted successfully, `404 Not Found` otherwise.
@@ -211,7 +211,7 @@ DELETE events/:orgId/:id
 Create a new user by making a **POST** request to the following endpoint:
 
 ```http
-POST users/:orgId/
+POST /users/:orgId/
 ```
 
 **Request Body:**
@@ -236,7 +236,7 @@ POST users/:orgId/
 Authenticate a user by making a **POST** request to the following endpoint:
 
 ```http
-POST users/:orgId/login
+POST /users/:orgId/login
 ```
 
 **Request Body:**
@@ -259,7 +259,7 @@ POST users/:orgId/login
 Retrieve all users for a specific organization by making a **GET** request to the following endpoint:
 
 ```http
-GET users/:orgId/
+GET /users/:orgId/
 ```
 
 **Response:**
@@ -273,7 +273,7 @@ A jwt token must be present in the [Authorization header](https://developer.mozi
 Retrieve the user associated with the provided token by making a **GET** request to the following endpoint:
 
 ```http
-GET users/:orgId/me
+GET /users/:orgId/me
 ```
 
 **Response:**
@@ -287,7 +287,7 @@ GET users/:orgId/me
 Retrieve a specific user by their ID for a given organization by making a **GET** request to the following endpoint:
 
 ```http
-GET users/:orgId/:id
+GET /users/:orgId/:id
 ```
 
 **Response:**
@@ -301,7 +301,7 @@ GET users/:orgId/:id
 Update an existing user by making a **PUT** request to the following endpoint:
 
 ```http
-PUT users/:orgId/:id
+PUT /users/:orgId/:id
 ```
 
 **Request Body:**
@@ -323,7 +323,7 @@ PUT users/:orgId/:id
 Delete a specific user by their ID for a given organization by making a **DELETE** request to the following endpoint:
 
 ```http
-DELETE users/:orgId/:id
+DELETE /users/:orgId/:id
 ```
 
 **Response:**
@@ -334,7 +334,7 @@ DELETE users/:orgId/:id
 Initiate the forgot password process by making a **POST** request to the following endpoint:
 
 ```http
-POST users/:orgId/forgot-password
+POST /users/:orgId/forgot-password
 ```
 
 **Request Body:**
