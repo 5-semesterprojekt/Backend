@@ -79,7 +79,7 @@ The backend can be started by running the start script:
 ```console
 yarn start
 ```
-You can make youre own website or use our frontend that we have developed along with this backend. you can use our frontend from here https://github.com/5-semesterprojekt/Frontend.git
+You can make your own website or use our frontend that we have developed along with this backend. You can get our frontend from here https://github.com/5-semesterprojekt/Frontend.git
 
 <br>
 
