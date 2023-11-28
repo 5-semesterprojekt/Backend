@@ -91,7 +91,7 @@ Starts the api, you would now be able to make calls, look at the api doc
 ### `yarn test`
 Runs all tests (see [jest](https://jestjs.io) for more).
 
-### `yarn martin`
+### `yarn prettier`
 **ToDo cahnge name**
 Formats the code according to the [.prettierrc](https://github.com/5-semesterprojekt/Backend/blob/main/.prettierrc).
 
