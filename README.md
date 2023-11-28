@@ -133,7 +133,7 @@ POST /events/:orgId/
   title: "some title",
   description: "some description",
   start: "2019-12-17T03:24:00",
-  end: "2019-12-18T03:24:00",
+  end: "2019-12-18T03:24:00"
 };
 ```
 #### Response
