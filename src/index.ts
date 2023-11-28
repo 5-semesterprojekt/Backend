@@ -9,7 +9,6 @@ import helmet from 'helmet';
 export const app = express();
 const port = process.env.PORT || 3000;
 
-
 app.use(express.json());
 app.use(cors());
 
@@ -18,9 +17,7 @@ app.use('/events', eventRoutes);
 app.use('/users', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send(
-    'Hello, this is the backend.',
-  );
+  res.send('Hello, this is the backend.');
 });
 // Catch celebrate validation errors
 app.use(errors());
