@@ -135,11 +135,11 @@ POST /events/:orgId/
   "end": "2019-12-18T03:24:00"
 }
 ```
-#### Response
+**Response:**
 
 - **Status Code:** `201 Created`
 
-Response Body: The created event object with an additional **id** field.
+**Response Body:** The created event object with an additional **id** field.
 
 ### Get All Events
 Retrieve all events for a specific organization by making a **GET** request to the following endpoint:
@@ -147,7 +147,7 @@ Retrieve all events for a specific organization by making a **GET** request to t
 ```http
 GET /events/:orgId/
 ```
-#### Response
+**Response:**
 **Status Code:** `200 OK` if the event is found.
 **Example**
 ```json
@@ -201,7 +201,7 @@ Delete a specific event by its ID for a given organization by making a **DELETE*
 ```http
 DELETE /events/:orgId/:id
 ```
-#### Response
+**Response:**
 - **Status Code:** `204 No Content` if the event is deleted successfully, `404 Not Found` otherwise.
 
 
