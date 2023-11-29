@@ -27,10 +27,12 @@ router.post(
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       firstName: Joi.string()
+      .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
         .min(2)
         .max(64)
         .required(),
       lastName: Joi.string()
+      .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
         .min(2)
         .max(64)
         .required(),
