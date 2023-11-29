@@ -15,7 +15,9 @@ import { BaseError } from '../errorHandler/baseErrors';
 
 const router = Router();
 
-// create new
+/**********************/
+/** CREATE NEW EVENT **/
+/**********************/
 router.post(
   '/:orgId/',
   celebrate({
@@ -41,7 +43,9 @@ router.post(
   }),
 );
 
-// get all
+/**********************/
+/*** GET ALL EVENTS ***/
+/**********************/
 router.get(
   '/:orgId/',
   asyncHandler(async (req: Request, res: Response) => {
@@ -50,7 +54,9 @@ router.get(
   }),
 );
 
-//get by id
+/**********************/
+/***** GET BY ID ******/
+/**********************/
 router.get(
   '/:orgId/:id',
   asyncHandler(async (req: Request, res: Response) => {
@@ -63,7 +69,9 @@ router.get(
   }),
 );
 
-//update
+/**********************/
+/**** UPDATE EVENT ****/
+/**********************/
 router.put(
   '/:orgId/:id',
   celebrate({
@@ -93,7 +101,9 @@ router.put(
   }),
 );
 
-// delete by id
+/**********************/
+/**** DELETE EVENT ****/
+/**********************/
 router.delete(
   '/:orgId/:id',
   auth,

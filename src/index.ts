@@ -19,6 +19,7 @@ app.use('/users', userRoutes);
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, this is the backend.');
 });
+
 // Catch celebrate validation errors
 app.use(errors());
 

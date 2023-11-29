@@ -18,10 +18,10 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import { BaseError } from '../errorHandler/baseErrors';
 
 const router = Router();
+
 /*******************/
 /*** CREATE USER ***/
 /*******************/
-
 router.post(
   '/:orgId/',
   celebrate({
@@ -60,10 +60,10 @@ router.post(
     res.status(201).json(user);
   }),
 );
+
 /******************/
 /*** USER LOGIN ***/
 /******************/
-
 router.post(
   `/:orgId/login`,
   celebrate({
@@ -77,18 +77,14 @@ router.post(
     }),
   }),
   asyncHandler(async (req: Request, res: Response) => {
-    const user: { user: User } = await userLogin(
-      req.body.email,
-      req.body.password,
-      req.params.orgId,
-    );
+    const user: User = await userLogin(req.body.email, req.body.password, req.params.orgId);
     res.status(200).json(user);
   }),
 );
+
 /****************************/
 /*** GET ALL USERS BY ORG ***/
 /****************************/
-
 router.get(
   '/:orgId/',
   auth,
@@ -97,6 +93,7 @@ router.get(
     res.json(users);
   }),
 );
+
 /****************************/
 /*** GET USER BY TOKEN/ID ***/
 /****************************/
@@ -105,14 +102,13 @@ router.get(
   auth,
   asyncHandler(async (req: CustomRequest, res: Response) => {
     const user: User = await getUserByToken(req.token as string);
-
     res.json(user);
   }),
 );
+
 /**********************/
 /*** GET USER BY ID ***/
 /**********************/
-
 router.get(
   '/:orgId/:id',
   auth,
@@ -121,10 +117,10 @@ router.get(
     res.json(user);
   }),
 );
+
 /**********************/
 /**** UPDATE USER *****/
 /**********************/
-
 router.put(
   '/:orgId/:id',
   auth,
@@ -164,10 +160,10 @@ router.put(
     res.json(newUserInfo);
   }),
 );
+
 /**********************/
 /**** DELETE USER *****/
 /**********************/
-
 router.delete(
   '/:orgId/:id',
   auth,
@@ -177,10 +173,10 @@ router.delete(
     res.status(204).end();
   }),
 );
+
 /************************/
 /**** FORGOT PASSWORD ***/
 /************************/
-
 router.post(
   '/:orgId/forgot-password',
   celebrate({
@@ -193,4 +189,5 @@ router.post(
     res.status(200).json({ message: 'Email sent' });
   }),
 );
+
 export default router;
