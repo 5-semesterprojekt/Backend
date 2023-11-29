@@ -23,12 +23,12 @@ export const errorResponder = (
   if (error) {
     response.header('Content-Type', 'application/json');
     if (error instanceof BaseError) {
-      response.status(error.status).send(error.message);
+      response.status(error.status).send({ message: error.message });
     } else {
-      response.status(500).send('Something went wrong');
+      response.status(500).send({ message: 'Something went wrong' });
     }
   } else {
-    return next(next);
+    next();
   }
 };
 

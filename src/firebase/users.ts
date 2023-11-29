@@ -89,11 +89,7 @@ export async function getUserByToken(id: string): Promise<User> {
   return user as User;
 }
 
-export async function userLogin(
-  email: string,
-  password: string,
-  orgId: string,
-): Promise<User> {
+export async function userLogin(email: string, password: string, orgId: string): Promise<User> {
   const emailQuery = query(collection(db, 'users'), where('email', '==', email));
   const emailQuerySnapshot = await getDocs(emailQuery);
 

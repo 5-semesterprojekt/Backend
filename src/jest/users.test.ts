@@ -23,12 +23,14 @@ describe('FIREBASE User tests', () => {
   beforeAll(async () => {
     testUser = await createUser(createTestUser);
   });
+
   test('Successfully create a user in the FIREBASE User service', async () => {
     expect(testUser.firstName).toBe(createTestUser.firstName);
     expect(testUser.lastName).toBe(createTestUser.lastName);
     expect(testUser.email).toBe(createTestUser.email);
     expect(testUser.orgId).toStrictEqual(createTestUser.orgId);
   });
+
   test('Successfully retrieve a user by organization ID from the FIREBASE User service', async () => {
     const data = await getAllUsersByOrgId(testUser.orgId![0]);
     const corretId = data.find((e) => e.id === testUser.id);
@@ -46,17 +48,18 @@ describe('FIREBASE User tests', () => {
     expect(data.email).toBe(testUser.email);
     expect(data.orgId).toStrictEqual(testUser.orgId);
   });
+
   test('Successfully log in a user via the FIREBASE User service', async () => {
     const data = await userLogin(
       testUser.email,
       createTestUser.password as string,
       testUser.orgId![0].toString(),
     );
-    expect(data.user.firstName).toBe(testUser.firstName);
-    expect(data.user.lastName).toBe(testUser.lastName);
-    expect(data.user.email).toBe(testUser.email);
-    expect(data.user.orgId[0]).toStrictEqual(testUser.orgId);
-    expect(data.user.id).toBe(testUser.id);
+    expect(data.firstName).toBe(testUser.firstName);
+    expect(data.lastName).toBe(testUser.lastName);
+    expect(data.email).toBe(testUser.email);
+    expect(data.orgId[0]).toStrictEqual(testUser.orgId);
+    expect(data.id).toBe(testUser.id);
   });
 
   test('Successfully delete a user from the FIREBASE User service', async () => {
@@ -68,7 +71,6 @@ describe('FIREBASE User tests', () => {
 /******************/
 /**** Express  ****/
 /******************/
-
 describe('EXPRESS user routes', () => {
   let expressId: string;
   let expressToken: string;
@@ -92,6 +94,7 @@ describe('EXPRESS user routes', () => {
     expect(res.body.email).toBe(user1.email);
     expect(res.body).not.toHaveProperty('password');
   });
+
   test('Successfully log in a user via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgid + '/login')
@@ -101,11 +104,12 @@ describe('EXPRESS user routes', () => {
       })
       .set('Authorization', 'Bearer ' + expressToken);
     expect(res.statusCode).toBe(200);
-    expect(res.body.user.firstName).toBe(user1.firstName);
-    expect(res.body.user.lastName).toBe(user1.lastName);
-    expect(res.body.user.email).toBe(user1.email);
+    expect(res.body.firstName).toBe(user1.firstName);
+    expect(res.body.lastName).toBe(user1.lastName);
+    expect(res.body.email).toBe(user1.email);
     expect(res.body).not.toHaveProperty('password');
   });
+
   test('Get user by orgId', async () => {
     const res = await request(app)
       .get('/users/' + orgid)
@@ -117,6 +121,7 @@ describe('EXPRESS user routes', () => {
     expect(user.email).toBe(user1.email);
     expect(res.body).not.toHaveProperty('password');
   });
+
   test('Successfully retrieve a user by token from the EXPRESS user route', async () => {
     const res = await request(app)
       .get('/users/' + orgid + '/me')
@@ -127,12 +132,14 @@ describe('EXPRESS user routes', () => {
     expect(res.body.email).toBe(user1.email);
     expect(res.body).not.toHaveProperty('password');
   });
+
   const user2: { [key: string]: any } = {
     firstName: 'Thor',
     lastName: 'Hansen',
     email: 'updatedtest@mail.com',
     password: 'Testå123Å4!!!!!',
   };
+
   test('Successfully update a user via the EXPRESS user route', async () => {
     const res = await request(app)
       .put('/users/' + orgid + '/' + expressId)
@@ -144,6 +151,7 @@ describe('EXPRESS user routes', () => {
     expect(res.body.email).toBe(user2.email);
     expect(res.body).not.toHaveProperty('password');
   });
+
   test('Successfully log in a user after password change via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgid + '/login')
@@ -153,11 +161,12 @@ describe('EXPRESS user routes', () => {
       })
       .set('Authorization', 'Bearer ' + expressToken);
     expect(res.statusCode).toBe(200);
-    expect(res.body.user.firstName).toBe(user2.firstName);
-    expect(res.body.user.lastName).toBe(user2.lastName);
-    expect(res.body.user.email).toBe(user2.email);
+    expect(res.body.firstName).toBe(user2.firstName);
+    expect(res.body.lastName).toBe(user2.lastName);
+    expect(res.body.email).toBe(user2.email);
     expect(res.body).not.toHaveProperty('password');
   });
+
   test('Delete user', async () => {
     const res = await request(app)
       .delete('/users/' + orgid + '/' + expressId)
@@ -205,8 +214,10 @@ describe('Test meant to fail', () => {
       });
     expect(res.statusCode).toBe(400);
   });
+
   const userWithTokenPassword = 'Asd!!!asdD23123';
   let userWithToken: User;
+
   test('Fail to create a user with an existing email via the EXPRESS user route', async () => {
     const res1 = await request(app)
       .post('/users/' + orgId)
@@ -225,9 +236,11 @@ describe('Test meant to fail', () => {
         email: 'asdfasdfasdf@hotmail.com',
         password: 'Asd!!!asdD23123',
       });
+
     expect(res1.statusCode).toBe(201);
     expect(res2.statusCode).toBe(400);
   });
+
   test('Fail to authenticate a user with an incorrect password via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgId + '/login')
@@ -258,12 +271,14 @@ describe('Test meant to fail', () => {
     expect(res.statusCode).toBe(401);
     await deleteUser(userWithToken);
   });
+
   test('Fail to fetch user details by organization ID with an invalid token via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgId + '/me')
       .set('Authorization', 'Bearer ' + 'wrongToken');
-    expect(res.statusCode).toBe(500);
+    expect(res.statusCode).toBe(404);
   });
+
   test('Fail to create a user with inconsistent repeat password via the EXPRESS user route', async () => {
     const res = await request(app)
       .post('/users/' + orgId)
