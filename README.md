@@ -14,7 +14,7 @@
    - [**Event**](#create-event)
    - [**Users**](#create-user)
 6. [**Error Handling**](#%EF%B8%8F-error-handling)
-8. [**Authentication**](#-authentication--authorization)
+8. [**Authentication / Authorization**](#-authentication--authorization)
 
 <br>
 
