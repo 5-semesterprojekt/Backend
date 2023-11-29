@@ -77,7 +77,7 @@ router.post(
     }),
   }),
   asyncHandler(async (req: Request, res: Response) => {
-    const user: { user: User } = await userLogin(
+    const user: User = await userLogin(
       req.body.email,
       req.body.password,
       req.params.orgId,

@@ -24,7 +24,7 @@ export async function createUser(newUser: BeforeCreateUser): Promise<User> {
   const emailQuery = query(collection(db, 'users'), where('email', '==', newUser.email));
   const emailQuerySnapshot = await getDocs(emailQuery);
   if (!emailQuerySnapshot.empty) {
-    throw new BaseError('That email is already  in the system', 400);
+    throw new BaseError('That email is already in the system', 400);
   }
   const hashedPassword: string = await bcrypt.hash(newUser.password!, 10);
   const docRef = doc(collection(db, `users`));
@@ -93,7 +93,7 @@ export async function userLogin(
   email: string,
   password: string,
   orgId: string,
-): Promise<{ user: User }> {
+): Promise<User> {
   const emailQuery = query(collection(db, 'users'), where('email', '==', email));
   const emailQuerySnapshot = await getDocs(emailQuery);
 
@@ -117,7 +117,7 @@ export async function userLogin(
       if (!user) {
         throw new BaseError('User not found', 404);
       }
-      return { user };
+      return user;
     }
   }
   throw new BaseError('User did not complete the login because something was spelt wrong!', 401);

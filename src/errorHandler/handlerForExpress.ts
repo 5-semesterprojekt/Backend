@@ -8,18 +8,27 @@ export const errorLogger = (
   response: Response,
   next: NextFunction,
 ) => {
-  console.log(`error ${error.message}`);
-  next(error); // calling next middleware
+  console.log(`Caught Error: ${error.message}`);
+  return next(error);
 };
 
 // Error handling Middleware function reads the error message
 // and sends back a response in JSON format
-export const errorResponder = (error: Error, request: Request, response: Response) => {
-  response.header('Content-Type', 'application/json');
-  if (error instanceof BaseError) {
-    response.status(error.status).send(error.message);
+export const errorResponder = (
+  error: Error,
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  if (error) {
+    response.header('Content-Type', 'application/json');
+    if (error instanceof BaseError) {
+      response.status(error.status).send(error.message);
+    } else {
+      response.status(500).send('Something went wrong');
+    }
   } else {
-    response.status(500).send('Something went wrong');
+    return next(next);
   }
 };
 
@@ -27,5 +36,5 @@ export const errorResponder = (error: Error, request: Request, response: Respons
 // 404 error for undefined paths
 export const invalidPathHandler = (request: Request, response: Response) => {
   response.status(404);
-  response.send('invalid path');
+  response.send('Invalid path');
 };
