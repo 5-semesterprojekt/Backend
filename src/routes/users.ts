@@ -37,11 +37,7 @@ router.post(
         .max(64)
         .required(),
       email: Joi.string().required().email(),
-      password: Joi.string()
-        .required()
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-ZÆØÅa-zæøå\d@$!%*?&]{8,}$/)
-        .min(8)
-        .max(64),
+      password: Joi.string().required().min(8).max(64),
       repeatPassword: Joi.ref('password'),
     }),
   }),
