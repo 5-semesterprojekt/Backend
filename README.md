@@ -4,27 +4,19 @@
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
 
-Table of context
+# 📌 Contents
 
 1. [**Setup**](#️-setup)
-
 2. [**Start**](#rocket-start)
-
 3. [**Scripts**](#-scripts)
-
 4. [**Contribution**](#building_construction-contribution)
-
-5. [**API Documentation**](#api-documentation)
-
+5. [**API Documentation**](#clipboard-api-documentation)
    - [**Event**](#create-event)
    - [**Users**](#create-user)
+6. [**Error Handling**](#-error-handling)
+8. [**Authentication**](#-authentication-/-authorization)
 
-6. [**Error Handling Documentation**](#error-handling-documentation)
-
-8. [**Authentication Middleware Documentation**](#authentication-middleware-documentation)
-
-
-
+<br>
 
 # 🛠️ Setup
 
@@ -52,23 +44,22 @@ it is advised to use our frontend which can get cloned from and follow the guide
 ```console
 git clone https://github.com/5-semesterprojekt/Frontend.git
 ```
-firebaseConfig-example.ts
 
 After that it is also advised to change the example file and rename them without example at the end, at the moment there 3 files that has to change.
-first one is firebaseConfig-example.ts
 
-This one is simple, go to https://console.firebase.google.com and create a new project and copy paste youre own firestore config and copypaste it in the firebaseConfig-example.ts file and rename the file to firebaseConfig.ts
+[firebaseConfig-example.ts](https://github.com/5-semesterprojekt/Backend/blob/main/src/secrets/firebaseConfig-example.ts)
 
-gmailSecrets-example.ts.
+This one is simple, go to the [firebase console](https://console.firebase.google.com) and create a new project.
+Then copy your own firestore config and paste it in the firebaseConfig-example.ts file and rename the file to firebaseConfig.ts
 
-if you allready have a gmail then you should just follow the intructions in the file and afterwards rename it to gmailSecrets.ts
-if you dont own an gmail then create one and follow the instructions in the     
-gmailSecrets-example.ts. 
+[gmailSecrets-example.ts](https://github.com/5-semesterprojekt/Backend/blob/main/src/secrets/gmailSecrets-example.ts)
 
-jwtSecretKey-example.ts
+If you already have a gmail then you should just follow the intructions in the file and afterwards rename it to gmailSecrets.ts.
+If you dont own an gmail then create one and follow the instructions in the gmailSecrets-example.ts. 
 
-Just rename the one that is called "SECRET_KEY" to something secure since this line is used store the users token and could be hacked if compremized.
+[jwtSecretKey-example.ts](https://github.com/5-semesterprojekt/Backend/blob/main/src/secrets/jwtSecretKey-example.ts)
 
+Just rename the one that is called "SECRET_KEY" to something secure, since this line is used store the user's token and could be hacked if compromised.
 
 <br>
 
@@ -104,11 +95,14 @@ Formats the code according to the [.prettierrc](https://github.com/5-semesterpro
 4. Make pull request to `main` and request a review
 5. <ins>**Squash and merge**</ins> when all requirements are met
 
-It is **HIGHLY** advisable, that you don't branch off secondary branches. Only branch off `main`.
+It is **HIGHLY** advisable, that you don't branch off secondary branches. Only branch off `main`.<br>
+Feel free to customize and expand upon this documentation based on your specific contributions.
 
-# API Documentation
+<br>
 
-### Create Event
+# :clipboard: API Documentation
+
+## Create Event
 
 Create a new event by making a POST request to the following endpoint:
 **Needs to be logged in/auth token**
@@ -117,12 +111,9 @@ Create a new event by making a POST request to the following endpoint:
 POST /events/:orgId/
 ```
 **Request Body:**
-**title** (string, required): The title of the event.
-
-**start** (date, required): The start date and time of the event in ISO format (e.g., "2019-12-17T03:24:00").
-
-**end** (date, required): The end date and time of the event in ISO format.
-
+**title** (string, required): The title of the event.<br>
+**start** (date, required): The start date and time of the event in ISO format (e.g., "2019-12-17T03:24:00").<br>
+**end** (date, required): The end date and time of the event in ISO format.<br>
 **description** (string, optional): A description of the event.
 
 **Example:**
@@ -134,20 +125,19 @@ POST /events/:orgId/
   "end": "2019-12-18T03:24:00"
 }
 ```
-**Response:**
 
-- **Status Code:** `201 Created`
-
+**Response:**<br>
+**Status Code:** `201 Created`<br>
 **Response Body:** The created event object with an additional **id** field.
 
-### Get All Events
+## Get All Events
 Retrieve all events for a specific organization by making a **GET** request to the following endpoint:
 
 ```http
 GET /events/:orgId/
 ```
-**Response:**
-**Status Code:** `200 OK` if the event is found.
+**Response:**<br>
+**Status Code:** `200 OK` if the event is found.<br>
 **Example**
 ```json
 [
@@ -163,23 +153,20 @@ GET /events/:orgId/
 
 ## Get Event by ID
 Retrieve a specific event by its ID for a given organization by making a **GET** request to the following endpoint:
-
 ```http
 GET /events/:orgId/:id
 ```
-**Response:**
-- **Status Code:** `200 OK` if the event is found, `404 Not Found` otherwise.
+
+**Response:**<br>
+**Status Code:** `200 OK` if the event is found, `404 Not Found` otherwise.
 
 ## Update Event
-
 Update an existing event by making a **PUT** request to the following endpoint:
-
 ```http
 PUT /events/:orgId/:id
 ```
 
 **Request Body:**
-
 ```json
 {
   "title": "Updated Event Title",
@@ -189,23 +176,20 @@ PUT /events/:orgId/:id
 }
 ```
 
-**Response:**
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** The updated event object.
 
-- **Status Code:** `200 OK`
-- **Response Body:** The updated event object.
-
-### Delete Event
+## Delete Event
 Delete a specific event by its ID for a given organization by making a **DELETE** request to the following endpoint:
-
 ```http
 DELETE /events/:orgId/:id
 ```
-**Response:**
-- **Status Code:** `204 No Content` if the event is deleted successfully, `404 Not Found` otherwise.
 
+**Response:**<br>
+**Status Code:** `204 No Content` if the event is deleted successfully, `404 Not Found` otherwise.
 
 ## Create User
-
 Create a new user by making a **POST** request to the following endpoint:
 
 ```http
@@ -213,7 +197,6 @@ POST /users/:orgId/
 ```
 
 **Request Body:**
-
 ```json
 {
   "firstName": "John",
@@ -224,13 +207,11 @@ POST /users/:orgId/
 }
 ```
 
-**Response:**
-
-- **Status Code:** `201 Created`
-- **Response Body:** The created user object.
+**Response:**<br>
+**Status Code:** `201 Created`<br>
+**Response Body:** The created user object.
 
 ## User Login
-
 Authenticate a user by making a **POST** request to the following endpoint:
 
 ```http
@@ -238,7 +219,6 @@ POST /users/:orgId/login
 ```
 
 **Request Body:**
-
 ```json
 {
   "email": "john.doe@example.com",
@@ -246,10 +226,9 @@ POST /users/:orgId/login
 }
 ```
 
-**Response:**
-
-- **Status Code:** `200 OK`
-- **Response Body:** The authenticated user object.
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** The authenticated user object.
 
 ## Get All Users by Organization
 **Needs to be logged in/auth token**
@@ -260,10 +239,9 @@ Retrieve all users for a specific organization by making a **GET** request to th
 GET /users/:orgId/
 ```
 
-**Response:**
-
-- **Status Code:** `200 OK`
-- **Response Body:** An array of user objects for the specified organization.
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** An array of user objects for the specified organization.
 
 ## Get User by Token/ID
 **Needs to be logged in/auth token**
@@ -274,10 +252,9 @@ Retrieve the user associated with the provided token by making a **GET** request
 GET /users/:orgId/me
 ```
 
-**Response:**
-
-- **Status Code:** `200 OK`
-- **Response Body:** The user object.
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** The user object.
 
 ## Get User by ID
 **Needs to be logged in/auth token**
@@ -288,106 +265,81 @@ Retrieve a specific user by their ID for a given organization by making a **GET*
 GET /users/:orgId/:id
 ```
 
-**Response:**
-
-- **Status Code:** `200 OK`
-- **Response Body:** The user object.
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** The user object.
 
 ## Update User
 **Needs to be logged in/auth token**
 
 Update an existing user by making a **PUT** request to the following endpoint:
-
 ```http
 PUT /users/:orgId/:id
 ```
 
 **Request Body:**
-
 ```json
 {
   "firstName": "Updated John"
 }
 ```
 
-**Response:**
-
-- **Status Code:** `200 OK`
-- **Response Body:** The updated user object.
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** The updated user object.
 
 ## Delete User
-**Needs to be logged in/auth token**
-
+**Needs to be logged in/auth token**<br>
 Delete a specific user by their ID for a given organization by making a **DELETE** request to the following endpoint:
-
 ```http
 DELETE /users/:orgId/:id
 ```
 
-**Response:**
-
-- **Status Code:** `204 No Content`
+**Response:**<br>
+**Status Code:** `204 No Content`
 
 ## Forgot Password
 Initiate the forgot password process by making a **POST** request to the following endpoint:
-
 ```http
 POST /users/:orgId/forgot-password
 ```
 
 **Request Body:**
-
 ```json
 {
   "email": "john.doe@example.com"
 }
 ```
 
-**Response:**
+**Response:**<br>
+**Status Code:** `200 OK`<br>
+**Response Body:** An object with a message indicating that the email has been sent.
 
-- **Status Code:** `200 OK`
-- **Response Body:** An object with a message indicating that the email has been sent.
+<br>
 
-# Error Handling Documentation
+# ⚠️ Error Handling
 
 ## Overview
-
 The error handling module in this application is designed to manage and respond to errors that may occur during the execution of API endpoints. It includes middleware functions for logging errors, responding with appropriate error messages, and handling invalid paths.
 
 ### Custom Errors
-
 Custom errors, such as ```BaseError```, are supported. They can be thrown with a specific status code and optional error details.
-
 ```javascript
 import { BaseError } from 'path-to-error-handler';
 
 throw new BaseError('Custom error message', 404, { additionalInfo: 'details' });
 ```
+A BaseError should generally be thrown when an error is expected. i.e. when an entry doesn't exist in a database, then `throw new BaseError('Error', 404);` immediately.
 
-## Password Validation
+<br>
 
-We use a regex that have some requrements, there must be upper and lowercase chars and a number plus a special char to get through our validation, a little extra thing is our common password checker.
-We have a list of top 100 common passwords to check if it overlaps on any of them, if it does then it gets recejted
-
-
-## Notes
-
-- Ensure that the error handling middleware functions are appropriately placed in the middleware stack to catch errors.
-- Custom errors can be used for more specific error handling with detailed status codes and error messages.
-
-Feel free to customize and expand upon this documentation based on your specific application requirements.
-
-# Authentication Middleware Documentation
-
-The authentication middleware in this application utilizes JSON Web Tokens (JWT) to verify and extract user information from incoming requests.
-
+# 🔑 Authentication / Authorization
 ## Overview
-
-The authentication middleware is designed to secure specific routes by ensuring that requests contain a valid JWT token in the 'Authorization' header. If the token is valid, the middleware decodes it, extracts the user ID, and attaches it to the request object for further use in downstream middleware or route handlers.
+The authentication middleware is designed to secure specific routes by ensuring that requests contain a valid JWT token in the [Authorization](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization) header. If the token is valid, the middleware decodes it, extracts the user ID, and attaches it to the request object for further use in downstream middleware or route handlers.
 
 ## Usage
-
-The `auth` middleware function should be applied to routes or groups of routes that require authentication.
+The `auth` middleware function should be applied to routes or groups of routes that require authentication.<br>
+If the token is missing or invalid, the middleware responds with a `401 Unauthorized` status code and the message "Please authenticate."
 
 ### Example
 
@@ -404,8 +356,3 @@ app.get('/authenticated-route', auth, (req: CustomRequest, res) => {
   // ... Other route handling logic
 });
 ```
-
-### Error Handling
-
-If the token is missing or invalid, the middleware responds with a 401 status code and the message "Please authenticate."
-
