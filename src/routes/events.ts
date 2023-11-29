@@ -92,8 +92,8 @@ router.put(
     } else {
       event.title = req.body.title || event.title;
       event.description = req.body.description; // || event.description  Deleted because it did not like an empty string
-      event.start = req.body.start || event.start;
-      event.end = req.body.end || event.end;
+      event.start = req.body.start.toISOString() || event.start;
+      event.end = req.body.end.toISOString() || event.end;
 
       await updateEvent(event);
       res.json(event);
