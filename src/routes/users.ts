@@ -27,20 +27,17 @@ router.post(
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       firstName: Joi.string()
-      .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
+        .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
         .min(2)
         .max(64)
         .required(),
       lastName: Joi.string()
-      .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
+        .regex(/^[a-zæøåA-ZÆØÅ\\-\s]+$/)
         .min(2)
         .max(64)
         .required(),
       email: Joi.string().required().email(),
-      password: Joi.string()
-        .required()
-        .min(8)
-        .max(64),
+      password: Joi.string().required().min(8).max(64),
       repeatPassword: Joi.ref('password'),
     }),
   }),
