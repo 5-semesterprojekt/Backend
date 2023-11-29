@@ -88,7 +88,6 @@ router.put(
     const event: Event = await getEventById(req.params.id);
 
     if (!event) {
-      console.log('Event not found: ', event);
       throw new BaseError('Event not found', 404);
     } else {
       event.title = req.body.title || event.title;
