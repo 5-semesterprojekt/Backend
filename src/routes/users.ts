@@ -67,7 +67,6 @@ router.post(
       email: Joi.string().required().email(),
       password: Joi.string()
         .required()
-        .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zæøå)(?=.*[A-ZÆØÅ]).{8,}$/)
         .min(8)
         .max(64),
     }),
@@ -140,19 +139,17 @@ router.put(
   }),
   asyncHandler(async (req: Request, res: Response) => {
     const user: User = await getUserById(req.params.id);
-    let hashedPassword: string | undefined;
-    if (req.body.password) {
-      hashedPassword = await bcrypt.hash(req.body.password, 10);
-    }
+    console.log(user.password);
     const updatedUser: User = {
       id: req.params.id,
       firstName: req.body.firstName || user.firstName,
       lastName: req.body.lastName || user.lastName,
       email: req.body.email || user.email,
-      password: hashedPassword || user.password,
       orgId: [parseInt(req.params.orgId)],
     };
+    
     const newUserInfo = await updateUser(updatedUser);
+    console.log("updatedUser");
     res.json(newUserInfo);
   }),
 );

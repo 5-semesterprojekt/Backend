@@ -18,12 +18,12 @@ export async function sendEmail(user: User, token: string) {
     subject: 'Testmail', // Subject line
     text: 'blah blah blah', // plain text body
     html:
-      '<a href="https://localhost:3010/glemt-adgangskode?token="' +
+      '<a href="https://brand5semester.netlify.app/glemt-adgangskode?token=' +
       token +
-      '>localhost:3010/glemt-adgangskode?token=' +
+      '">brand5semester.netlify.app/glemt-adgangskode?token=' +
       token +
       '</a>' +
-      ' uuuh hallo there, any hot guys on the line? like someone called' +
+      ' Hallo, This is still a work in progress. Thanks for beeing here ' +
       user.firstName +
       ' ' +
       user.lastName +

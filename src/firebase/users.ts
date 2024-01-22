@@ -118,7 +118,6 @@ export async function userLogin(email: string, password: string, orgId: string):
   }
   throw new BaseError('User did not complete the login because something was spelt wrong!', 401);
 }
-//hashes password in routes intill i know a better way
 export async function updateUser(user: User): Promise<User> {
   const updateUser = doc(db, 'users', `${user.id}`);
   await updateDoc(updateUser, {
@@ -126,7 +125,6 @@ export async function updateUser(user: User): Promise<User> {
     lastName: user.lastName,
     email: user.email,
     orgId: user.orgId,
-    password: user.password,
   });
   if (!updateUser) {
     throw new BaseError('User not found', 404);
