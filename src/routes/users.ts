@@ -65,10 +65,7 @@ router.post(
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       email: Joi.string().required().email(),
-      password: Joi.string()
-        .required()
-        .min(8)
-        .max(64),
+      password: Joi.string().required().min(8).max(64),
     }),
   }),
   asyncHandler(async (req: Request, res: Response) => {
@@ -147,9 +144,9 @@ router.put(
       email: req.body.email || user.email,
       orgId: [parseInt(req.params.orgId)],
     };
-    
+
     const newUserInfo = await updateUser(updatedUser);
-    console.log("updatedUser");
+    console.log('updatedUser');
     res.json(newUserInfo);
   }),
 );
