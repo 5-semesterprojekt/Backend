@@ -12,7 +12,7 @@ import {
   forgotPassword,
 } from '../firebase/users';
 import { auth, CustomRequest } from '../middleware/auth';
-import bcrypt from 'bcrypt';
+//import bcrypt from 'bcrypt';
 import { commonPasswords100 } from '../errorHandler/validations';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { BaseError } from '../errorHandler/baseErrors';
